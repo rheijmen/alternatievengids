@@ -20,5 +20,12 @@ Rik is ondernemer en geen programmeur. Hij is perfectionistisch en wil het beste
 ## Toon
 - Nederlands, direct, geen emoji's, geen vakjargon zonder uitleg.
 
+## Formulieren: vergevingsgezind en in eigen taal
+- Geldt voor ALLE velden, ALTIJD. Nooit de meldingen van de browser tonen (die zijn Engels en onduidelijk, bijvoorbeeld "Please enter a URL.").
+- Dus: geen `type="url"`, `email`, `number`, `tel` of `date`, geen `required`, en `novalidate` op het formulier. Gebruik `type="text"` met `inputmode` en `autocomplete`.
+- Maak invoer ruimhartig: "voorbeeld.nl" zonder https:// of www is gewoon goed (wij voegen dat toe), spaties eromheen worden weggehaald, hoofdletters in e-mail genegeerd.
+- Foutmeldingen komen onder het veld, in de taal van de pagina, en zeggen wat de bezoeker moet doen, met een voorbeeld ("Vul het zo in: voorbeeld.nl"). Koppel ze met `aria-invalid` en `aria-describedby`, zet de focus op het eerste foute veld.
+- Zonder JavaScript is er een mail-terugval. `scripts/check.mjs` keurt de verboden velden af.
+
 ## Nieuwe sessie
 - Lees eerst `docs/OVERDRACHT.md`: doel, stand van zaken, gedeelde bronnen en open keuzes. Werk dat bestand bij aan het eind van een sessie.

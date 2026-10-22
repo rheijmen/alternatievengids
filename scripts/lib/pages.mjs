@@ -2,7 +2,7 @@
 
 import { esc, lead, fit, nl, dateNl, isoDay } from './text.mjs';
 import { STAGES, STAGE_LABEL, CATEGORY_LABEL, targetHasPage, shortName } from './model.mjs';
-import { layout, link, badge, mailto, sponsorBanner, submitForm, scanCta, faqHtml, faqLd, breadcrumbs, organizationLd, meter } from './render.mjs';
+import { layout, link, badge, mailto, sponsorBanner, submitForm, scanCta, faqHtml, faqLd, breadcrumbs, organizationLd, meter, NEWTAB } from './render.mjs';
 
 const OPEN = { yes: 'Ja', core: 'Gedeeltelijk (open core)', no: 'Nee' };
 const DELIVERY = { managed: 'Beheerd door een host', 'self-hosted': 'Zelf te hosten', saas: 'Als dienst (SaaS)' };
@@ -126,7 +126,7 @@ function productPage(ctx, p) {
     p.sealLevel && ['EU-soevereiniteitsniveau', `SEAL-${esc(p.sealLevel)}${p.bottleneck ? `: ${esc(p.bottleneck)}` : ''}`],
     p.checked && ['Laatst gecontroleerd', esc(dateNl(p.checked))],
     p.reevaluate && ['Opnieuw bekijken', esc(p.reevaluate)],
-    p.website && ['Website', `<a href="${esc(p.website)}" rel="${p.stage === 'unrated' ? 'nofollow ' : ''}noopener" target="_blank">${esc(p.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))}</a>`],
+    p.website && ['Website', `<a href="${esc(p.website)}" rel="${p.stage === 'unrated' ? 'nofollow ' : ''}noopener" target="_blank">${esc(p.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))}${NEWTAB}</a>`],
   ].filter(Boolean);
 
   const body = `${bc.html}
@@ -144,9 +144,9 @@ function productPage(ctx, p) {
     <div class="product-main">
       ${p.assessment ? `<section><h2>Oordeel van Newground</h2><blockquote class="assessment">${esc(p.assessment)}</blockquote></section>` : ''}
       ${p.note && p.note !== p.assessment ? `<section><h2>Wat het is</h2><p>${esc(p.note)}</p></section>` : ''}
-      ${p.govUse.length ? `<section><h2>Door overheden gebruikt</h2><ul class="plain">${p.govUse.map(g => `<li><strong>${esc(g.who)}</strong>${g.what ? `: ${esc(g.what)}` : ''}${g.url ? ` (${link(g.url, 'bron', 'rel="noopener" target="_blank"')})` : ''}</li>`).join('')}</ul></section>` : ''}
+      ${p.govUse.length ? `<section><h2>Door overheden gebruikt</h2><ul class="plain">${p.govUse.map(g => `<li><strong>${esc(g.who)}</strong>${g.what ? `: ${esc(g.what)}` : ''}${g.url ? ` (${link(g.url, `bron<span class="visually-hidden"> van ${esc(g.who)} (opent in een nieuw tabblad)</span>`, 'rel="noopener" target="_blank"')})` : ''}</li>`).join('')}</ul></section>` : ''}
       ${reps.length ? `<section><h2>Vervangt</h2><ul class="chips chips-lg">${reps.map(r => { const t = ctx.model.targets.find(x => x.key === r.key); return `<li>${t && targetHasPage(t) ? link(targetPath(t), esc(r.name)) : esc(r.name)}</li>`; }).join('')}</ul></section>` : ''}
-      ${p.sources.length ? `<section><h2>Bronnen</h2><ul class="plain sources">${p.sources.map(s => `<li>${link(s, esc(s.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')), 'rel="noopener" target="_blank"')}</li>`).join('')}</ul></section>` : ''}
+      ${p.sources.length ? `<section><h2>Bronnen</h2><ul class="plain sources">${p.sources.map(s => `<li>${link(s, esc(s.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')) + NEWTAB, 'rel="noopener" target="_blank"')}</li>`).join('')}</ul></section>` : ''}
       ${other.length ? `<section><h2>Andere alternatieven voor ${esc(reps[0].name)}</h2><ul class="items">${other.map(item).join('')}</ul></section>` : ''}
       ${p.comparisons?.length ? `<section><h2>Vergelijk ${esc(shortName(p))} met</h2><ul class="chips chips-lg">${p.comparisons.slice(0, 6).map(c => `<li>${link(comparePath(c), esc(shortName(c.a === p ? c.b : c.a)))}</li>`).join('')}</ul></section>` : ''}
     </div>
@@ -329,7 +329,7 @@ function comparePage(ctx, c) {
 <p class="answer"><strong>Kort antwoord.</strong> ${esc(answer)} <span class="updated">Bijgewerkt op ${esc(dateNl(model.generated))}.</span></p>
 ${notes}
 ${sponsorBanner(ctx)}
-<section><h2>De gegevens naast elkaar</h2><div class="table-wrap">${table}</div></section>
+<section><h2>De gegevens naast elkaar</h2><div class="table-wrap" tabindex="0" role="region" aria-label="Vergelijking van ${esc(A)} en ${esc(B)}, scroll zijwaarts als de tabel niet past">${table}</div></section>
 ${diffs.length ? `<section><h2>Waar ze op verschillen</h2><ul class="plain">${diffs.map(d => `<li>${esc(d)}</li>`).join('')}</ul></section>` : ''}
 <section><h2>Wat Newground zegt</h2><div class="sayings">${sayings}</div></section>
 ${scanCta(ctx, `Gebruik je ${esc(c.targets[0].name)}? Doe de gratis Soevereiniteitsscan van Newground en zie in ongeveer vijf minuten hoe afhankelijk je organisatie is en wat een eerste stap is.`)}
@@ -442,6 +442,7 @@ function homePage(ctx) {
     <label for="q" class="visually-hidden">Zoek een product of alternatief</label>
     <input id="q" type="search" placeholder="Welk product wil je vervangen? Bijvoorbeeld Slack" autocomplete="off" aria-controls="search-results" aria-expanded="false">
     <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+    <p class="search-empty" role="status" hidden>Niets gevonden voor <b></b>. Probeer een ander woord, bekijk ${link('/alternatief-voor/', 'alle producten die je kunt vervangen')} of ${link('/dien-in/', 'dien het alternatief in', 'data-submit-open')}.</p>
   </form>
   <p class="popular"><span>Populair:</span> ${popular.slice(0, 6).map(t => link(targetPath(t), esc(t.name))).join(' ')}</p>
 </section>
@@ -516,6 +517,8 @@ function aboutPage(ctx) {
     description: 'Alternatievengids.nl helpt Nederlandse organisaties een Europees alternatief te vinden voor Amerikaanse software. Een initiatief van Newground.',
     lead: 'Een gids om te vinden wat er is, en om te weten wat je kunt vertrouwen.',
     html: `<p>Steeds meer Nederlandse organisaties willen minder afhankelijk zijn van Amerikaanse software. Wat ontbreekt is een plek waar je eerlijk ziet wat er is, per product dat je wilt vervangen. Dat is deze gids: Europese en open-source alternatieven, met bron, datum en het oordeel van Newground.</p>
+<h2>Waarom beta</h2>
+<p>De gids is nog in opbouw. De lijst groeit (nu ${ctx.model.stats.products} producten, het doel is ${ctx.model.stats.goal}), niet elk product is al beoordeeld en er kan nog iets haperen. Zie je iets dat niet klopt of beter kan? Mail ${link('mailto:' + ctx.scan.contact.email, esc(ctx.scan.contact.email))}; daar zijn we blij mee.</p>
 <h2>Wat je hier vindt</h2>
 <ul><li>Per Amerikaans product de alternatieven, op pagina's als <a href="/alternatief-voor/">Europees alternatief voor...</a>.</li><li>Per alternatief een eigen pagina met feiten, bronnen en ons oordeel.</li><li>Overzichten per categorie en sector.</li></ul>
 <h2>Wie erachter zit</h2>
