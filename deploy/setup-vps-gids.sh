@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 # alternatievengids.nl op de VPS waar ook de Soevereiniteitsscan op draait (Caddy).
 #
-# Wat het doet:
-#   - maakt een leessleutel (deploy key) voor GitHub, zodat de VPS de private repo mag lezen
+# Eén regel in de Webconsole van de VPS (als root):
+#   curl -fsSL https://raw.githubusercontent.com/rheijmen/alternatievengids/main/deploy/setup-vps-gids.sh | bash
+#
+# Het script stelt geen vragen. Wat het doet:
 #   - haalt de kant-en-klare site op (branch "site", die GitHub elke ochtend en bij elke wijziging bouwt)
 #   - werkt de site elke 5 minuten bij, net als de scan
 #   - voegt de site toe aan Caddy via een eigen bestand (/etc/caddy/conf.d/alternatievengids.caddy)
 #     en een import-regel onderaan de Caddyfile. Daarna test het de configuratie en zet bij een fout alles terug.
 #
-# Raakt de scan niet aan. Voer als root uit, bijvoorbeeld in de Hostinger Webconsole, nadat setup-vps.sh van de scan
-# ooit is gedraaid (Caddy en git staan dan al). Veilig om opnieuw te draaien.
+# Raakt de scan niet aan. Veilig om opnieuw te draaien. Vereist dat setup-vps.sh van de scan ooit is gedraaid
+# (Caddy en git staan dan al) en dat de repo openbaar is. Blijft de repo privé: USE_KEY=1 bash setup-vps-gids.sh
+# maakt een leessleutel die je in GitHub als deploy key moet zetten.
 #
 # LET OP: draait de scan later setup-vps.sh opnieuw, dan schrijft dat de Caddyfile opnieuw en verdwijnt de
-# import-regel. Draai dan dit script nog eens (30 seconden), of laat setup-vps.sh die regel behouden (zie docs/HOSTING.md).
+# import-regel. Draai dan deze regel nog eens (30 seconden), of laat setup-vps.sh die regel behouden (zie docs/HOSTING.md).
 
 set -euo pipefail
 
-REPO="${REPO:-git@github.com:rheijmen/alternatievengids.git}"
+USE_KEY="${USE_KEY:-}"
+REPO="${REPO:-}"
 BRANCH="${BRANCH:-site}"
 DOMAIN="${DOMAIN:-alternatievengids.nl}"
 DIR="${DIR:-/var/www/alternatievengids}"
@@ -25,12 +29,24 @@ CADDYFILE="${CADDYFILE:-/etc/caddy/Caddyfile}"
 CONF_DIR="${CONF_DIR:-/etc/caddy/conf.d}"
 CADDY="${CADDY:-caddy}"
 SITE_CONF="$CONF_DIR/alternatievengids.caddy"
+# Overridable for the tests; on a real server the defaults are right.
+BIN_DIR="${BIN_DIR:-/usr/local/bin}"
+UNIT_DIR="${UNIT_DIR:-/etc/systemd/system}"
+OS_RELEASE="${OS_RELEASE:-/etc/os-release}"
+if [ -z "$REPO" ]; then
+  if [ -n "$USE_KEY" ]; then REPO="git@github.com:rheijmen/alternatievengids.git"; else REPO="https://github.com/rheijmen/alternatievengids.git"; fi
+fi
 
 say() { printf '\n== %s\n' "$*"; }
 die() { printf '\nGestopt: %s\n' "$*" >&2; exit 1; }
 
 git_ssh() {
   echo "ssh -i $KEY -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=$(dirname "$KEY")/known_hosts"
+}
+
+# Line for the update script: only with a key (private repo); a public repo needs nothing.
+updater_env() {
+  [ -n "$USE_KEY" ] && printf 'export GIT_SSH_COMMAND="%s"\n' "$(git_ssh)" || true
 }
 
 ensure_key() {
@@ -105,24 +121,24 @@ apply_caddy() {
 }
 
 install_updater() {
-  cat > /usr/local/bin/alternatievengids-update <<EOF2
+  cat > "$BIN_DIR/alternatievengids-update" <<EOF2
 #!/usr/bin/env bash
 set -euo pipefail
-export GIT_SSH_COMMAND="$(git_ssh)"
+$(updater_env)
 git -C "$DIR" fetch -q --depth 1 origin "$BRANCH"
 git -C "$DIR" reset -q --hard FETCH_HEAD
 EOF2
-  chmod 755 /usr/local/bin/alternatievengids-update
-  cat > /etc/systemd/system/alternatievengids-update.service <<'EOF2'
+  chmod 755 "$BIN_DIR/alternatievengids-update"
+  cat > "$UNIT_DIR/alternatievengids-update.service" <<EOF2
 [Unit]
 Description=Pull the latest alternatievengids.nl site from GitHub
 After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/alternatievengids-update
+ExecStart=$BIN_DIR/alternatievengids-update
 EOF2
-  cat > /etc/systemd/system/alternatievengids-update.timer <<'EOF2'
+  cat > "$UNIT_DIR/alternatievengids-update.timer" <<'EOF2'
 [Unit]
 Description=Pull the latest alternatievengids.nl site every 5 minutes
 
@@ -138,16 +154,17 @@ EOF2
 }
 
 main() {
-  [ "$(id -u)" -eq 0 ] || die "voer dit uit als root."
-  grep -q 'Ubuntu' /etc/os-release || die "dit script is geschreven voor Ubuntu."
+  [ "$(id -u)" -eq 0 ] || [ -n "${ALLOW_NON_ROOT:-}" ] || die "voer dit uit als root."
+  grep -q 'Ubuntu' "$OS_RELEASE" || die "dit script is geschreven voor Ubuntu."
   command -v "$CADDY" >/dev/null || die "Caddy ontbreekt. Draai eerst setup-vps.sh van de scan."
   command -v git >/dev/null || die "git ontbreekt. Draai eerst setup-vps.sh van de scan."
   [ -f "$CADDYFILE" ] || die "$CADDYFILE bestaat niet. Draai eerst setup-vps.sh van de scan."
   [[ "$DOMAIN" =~ ^[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || die "dat lijkt geen geldige domeinnaam."
 
-  say "Leessleutel voor GitHub"
-  ensure_key
-  cat <<EOF2
+  if [ -n "$USE_KEY" ]; then
+    say "Leessleutel voor GitHub (privé-repo)"
+    ensure_key
+    cat <<EOF2
 
 Zet deze sleutel in GitHub, anders mag de VPS de private repo niet lezen:
   1. Ga naar https://github.com/rheijmen/alternatievengids/settings/keys
@@ -157,15 +174,16 @@ Zet deze sleutel in GitHub, anders mag de VPS de private repo niet lezen:
 $(cat "$KEY.pub")
 
 EOF2
-  read -rp "Gelukt? Druk op Enter om door te gaan: " _ </dev/tty
+    read -rp "Gelukt? Druk op Enter om door te gaan: " _ </dev/tty
+    export GIT_SSH_COMMAND="$(git_ssh)"
+  fi
 
   say "Site ophalen van GitHub (branch $BRANCH)"
-  export GIT_SSH_COMMAND="$(git_ssh)"
   if [ -d "$DIR/.git" ]; then
     git -C "$DIR" fetch -q --depth 1 origin "$BRANCH" && git -C "$DIR" reset -q --hard FETCH_HEAD
   else
     rm -rf "$DIR"
-    git clone -q --depth 1 --branch "$BRANCH" "$REPO" "$DIR" || die "ophalen mislukt. Staat de sleutel in GitHub, en bestaat de branch '$BRANCH'? Die maakt GitHub aan na het mergen van de wijziging en de eerste bouw (tabblad Actions)."
+    git clone -q --depth 1 --branch "$BRANCH" "$REPO" "$DIR" || die "ophalen mislukt. Is de repo openbaar, en bestaat de branch '$BRANCH'? Die maakt GitHub aan na de eerste bouw op main (tabblad Actions)."
   fi
   [ -f "$DIR/index.html" ] || die "er staat geen index.html in $DIR. Is de eerste bouw op GitHub klaar?"
   chmod 755 "$DIR"

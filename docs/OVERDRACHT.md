@@ -15,7 +15,7 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 2. **Dezelfde logica als de scan**: de bouw haalt de modules en `data/verdicts.json` van de scan en gebruikt die zelf (zie README). Niets is gekopieerd.
 3. **Kandidaten tonen, met label** "Nog niet beoordeeld". Alleen beoordeeld/goedgekeurd tonen was het advies; Rik koos de ruimere variant. Daarom zijn die pagina's `noindex` (zie hieronder) en toont een kandidaat alleen neutrale feiten.
 4. **Hosting:** op de VPS van de scan, later eventueel verhuizen. De bouw levert een map (`dist/`) op die elke statische host kan serveren, dus verhuizen kost niets.
-5. **Uitstraling:** rustig en overzichtelijk zoals european-alternatives.eu (die site was vanuit de sandbox niet te bekijken; de opzet is gebouwd op het bekende patroon: zoekveld bovenaan, tegels per product en categorie, rustige lijsten met filters), in Newgrounds eigen stijl (zwart-wit, arcering, Baloo 2) uit de scan.
+5. **Uitstraling:** rustig en overzichtelijk (de opzet is gebouwd op een bekend patroon: zoekveld bovenaan, tegels per product en categorie, rustige lijsten met filters), in Newgrounds eigen stijl (zwart-wit, arcering, Baloo 2) uit de scan.
 6. **Newground is zelf sponsor:** een duidelijk gemarkeerde sponsorbanner ("Sponsor", `rel="sponsored"`), en onderaan elke pagina drie lege sponsorvakken met een plus. Klik opent een voorgevulde mail aan Rik. Er is een pagina `/sponsor/`.
 7. **Analytics:** Simple Analytics, zoals op newground.nl (script en noscript-pixel). De badge staat uit (`analytics.badge` in `data/site.json`).
 8. **Inzenden:** een modal (ook als eigen pagina `/dien-in/`) waarin je kiest: gebruiker of fan, producent of leverancier. Basisvelden plus toelichting. Producent en leverancier moeten aankruisen dat ze updates willen doorgeven en vragen willen beantwoorden; voor een fan is dat optioneel.
@@ -37,7 +37,7 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 ## Wat Rik nog moet doen
 
 1. **Draft-PR bekijken** en laten weten wat anders moet (zie de vragen onderaan het gesprek).
-2. **Hosting en domein (besluit Rik, 22 oktober):** op de VPS van de scan, domein bij Hostinger. Stap voor stap in `docs/HOSTING.md`. Daarna het script `deploy/setup-vps-gids.sh` op de VPS draaien en twee DNS-records zetten. GitHub bouwt elke ochtend en zet de site op de branch `site`; de VPS haalt die elke 5 minuten op. Let op: `setup-vps.sh` van de scan overschrijft de Caddyfile; zie `docs/HOSTING.md`.
+2. **Hosting en domein (besluit Rik, 22 oktober):** op de VPS van de scan, domein bij Hostinger, repo openbaar. Stap voor stap in `docs/HOSTING.md`: twee DNS-records en een regel op de VPS (`deploy/setup-vps-gids.sh`). GitHub bouwt elke ochtend en zet de site op de branch `site`; de VPS haalt die elke 5 minuten op. Let op: `setup-vps.sh` van de scan overschrijft de Caddyfile; zie `docs/HOSTING.md`.
 3. **Simple Analytics:** alternatievengids.nl toevoegen als site in het account (anders telt hij niets).
 4. **Inzendingen laten aankomen:** nu opent het formulier een ingevulde mail (werkt direct). Voor Baserow: een Make-webhook of eigen endpoint, het webadres in `submit.endpoint` in `data/site.json` zetten, en de privacyverklaring wordt dan vanzelf aangepast. De webhook moet CORS toestaan, anders valt het formulier terug op de mail. Nieuwe Baserow-kolommen nodig (de Baserow-tool kan ze niet maken): *Indiener rol*, *Indiener naam*, *Indiener e-mail*, *Bereid tot updates*, *Inzending toelichting*, *Ingediend op*. De rest past op bestaande kolommen: Name, Website, Replaces, HQ / legal entity, Open source, *Gidsstatus* = Kandidaat, *Toegevoegd door* = "Bezoeker (rol)".
 5. **Teksten controleren die uitspraken doen over jou en Newground:** `/hoe-we-beoordelen/` (zegt dat AI-assistenten een deel van het zoeken en toetsen doen maar nooit een oordeel geven; "sponsoring koopt zichtbaarheid, geen oordeel"), `/over/` en `/sponsor/`. En de belangenlijst (`belangen.ids` in `data/site.json`: nextcloud-hub, nc-talk, nc-files; afgeleid van "Newground offers Nextcloud itself" in Baserow): klopt die?
@@ -54,11 +54,11 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 
 Gebruik dezelfde lijst als de scan, zodat er één lijst is om bij te houden. Niet kopiëren naar een eigen database.
 
-- **Baserow** (Nederlands bedrijf): database 576229, tabel 1243445.
+- **Baserow** (Nederlands bedrijf): de alternatievenlijst van Newground.
 - **Kant-en-klaar bestand:** een Make-scenario schrijft de hele tabel elke ochtend om 06:40 naar `data/verdicts.json` in `rheijmen/sovereignos`; de scan serveert het op https://scan.newground.nl/data/verdicts.json (velden `generated`, `count`, `results`).
 - **Uitleg van alle kolommen en statussen:** `docs/gids/README.md` in `rheijmen/sovereignos`. Wijzigingen aan de drie agents (Gids-Sector, Gids-Categoriser, Gids-Filter) gaan via die repo.
 - **Wat publiek mag:** zie README, "Wat publiek is". Een *Gangbaar product* mag als "alternatief voor"-onderwerp (dat gebeurt automatisch als een product het in *Replaces* noemt).
-- **Bronnen die we niet mogen overnemen:** European Tech Map, european-alternatives.eu en euro-stack verbieden kopiëren. Alleen als spoor voor namen. Dat geldt ook voor ons ontwerp: we nemen de opzet als inspiratie, geen tekst of data.
+- **Bronnen:** we nemen geen lijsten over van overzichtssites die kopiëren verbieden; we gebruiken alleen bronnen met een vrije licentie of eigen onderzoek (zie `/bronnen/`). Het ontwerp is eigen werk.
 - De scan kan veranderen. `scripts/lib/scan.mjs` controleert bij elke bouw of de verwachte functies er nog zijn en stopt met een duidelijke melding als dat niet zo is.
 
 ## Backlog (nog niet gebouwd)
@@ -78,6 +78,7 @@ Gebruik dezelfde lijst als de scan, zodat er één lijst is om bij te houden. Ni
 
 - **Server van de scan:** `setup-vps.sh` in sovereignos overschrijft de Caddyfile. Een tweede site op dezelfde server vraagt eerst een aanpassing van dat script. Alleen Rik draait dat script, als root.
 - **De API van de scan** accepteert alleen verzoeken van zijn eigen origin; daarom heeft de Gids een eigen formulier-endpoint nodig.
+- **De repo is openbaar sinds 22 oktober** (Rik koos dat, zodat de VPS geen sleutel nodig heeft). Alles wat erin staat, ook de geschiedenis, is voor iedereen leesbaar. Zet er nooit sleutels, wachtwoorden of privégegevens in.
 - **Geen geheimen in de repo of in de chat.** De Baserow-sleutel staat alleen op de server; een webhook-adres in `data/site.json` is wel openbaar zichtbaar: gebruik er een met alleen schrijfrechten voor kandidaten en filter spam in het scenario.
 - **De bouw voert code van de scan uit** (haalt `js/data/*.js` op). Dat is onze eigen site; wie de scan kan wijzigen, kan dus ook de Gids-bouw beinvloeden.
 - **sovereignos lokaal nodig voor mijn sandbox:** scan.newground.nl is vanuit de cloud-sandbox geblokkeerd; gebruik daar `SCAN_DIR=/pad/naar/sovereignos`. In GitHub Actions werkt `SCAN_ORIGIN`.
