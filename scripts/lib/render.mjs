@@ -155,7 +155,7 @@ function footer(ctx) {
     </div>
     <div class="footer-cols">
       <nav aria-labelledby="f1"><h2 id="f1">De gids</h2><ul>
-        <li><a href="/alternatief-voor/">Alternatief voor</a></li><li><a href="/categorie/">Categorieën</a></li><li><a href="/alternatieven/">Alle producten</a></li>${ctx.model.sectors.map(s => `<li><a href="/sector/${s.slug}/">${esc(s.name)}</a></li>`).join('')}</ul></nav>
+        <li><a href="/alternatief-voor/">Alternatief voor</a></li><li><a href="/categorie/">Categorieën</a></li><li><a href="/alternatieven/">Alle producten</a></li>${ctx.model.comparisons.length ? '<li><a href="/vergelijk/">Vergelijken</a></li>' : ''}${ctx.model.sectors.map(s => `<li><a href="/sector/${s.slug}/">${esc(s.name)}</a></li>`).join('')}</ul></nav>
       <nav aria-labelledby="f2"><h2 id="f2">Over de gids</h2><ul>
         <li><a href="/hoe-we-beoordelen/">Hoe we beoordelen</a></li><li><a href="/over/">Over deze gids</a></li><li><a href="/bronnen/">Bronnen en voortgang</a></li><li><a href="/dien-in/" data-submit-open>Dien een alternatief in</a></li><li><a href="/sponsor/">Sponsor worden</a></li></ul></nav>
       <nav aria-labelledby="f3"><h2 id="f3">Newground</h2><ul>
@@ -227,7 +227,10 @@ export const scanCta = (ctx, text) => `<aside class="scan-cta">
 
 export const faqHtml = items => `<section class="faq" aria-labelledby="faq-h"><h2 id="faq-h">Veelgestelde vragen</h2>${items.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${a}</p></details>`).join('')}</section>`;
 
-export const faqLd = items => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) });
+// HTML answer to plain text for structured data: no tags, no entities.
+const plain = html => html.replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+export const faqLd = items => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: plain(a) } })) });
 
 export const organizationLd = ctx => ({
   '@context': 'https://schema.org', '@type': 'Organization', '@id': ctx.site.newgroundUrl + '/#organization', name: 'Newground', legalName: ctx.scan.company.legalName,

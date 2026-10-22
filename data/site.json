@@ -36,7 +36,7 @@
   "targetNames": {
     "chatgpt": "ChatGPT",
     "copilot": "Microsoft Copilot",
-    "onedrive": "OneDrive en SharePoint",
+    "onedrive": "OneDrive/SharePoint",
     "exchange": "Exchange Server",
     "whatsapp": "WhatsApp",
     "dynamics": "Microsoft Dynamics 365"

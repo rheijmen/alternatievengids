@@ -103,3 +103,41 @@ test('tekst-hulpjes', () => {
   assert.ok(lead('Een zin die lang genoeg is om door te gaan. Nog een zin hier.', 60).endsWith('.'));
   assert.ok(fit('Eerste zin. Tweede zin is wat langer dan de eerste. Derde.', 40).length <= 41);
 });
+
+// ---- Comparisons ----------------------------------------------------------------------------------------------
+import { buildComparisons, shortName } from '../scripts/lib/model.mjs';
+
+const prod = (slug, name, o = {}) => ({ slug, name, stage: 'advise', category: 'communication', assessment: `Oordeel ${name}`, note: '', ...o });
+const target = (key, products) => ({ key, name: key, products });
+
+test('vergelijkingen: alleen beoordeelde producten, zelfde categorie, alfabetisch, geen dubbelen', () => {
+  const a = prod('alfa', 'Alfa'), b = prod('bravo', 'Bravo', { stage: 'conditional' }), c = prod('charlie', 'Charlie', { stage: 'unrated' });
+  const d = prod('delta', 'Delta', { category: 'storage' }), w = prod('echo', 'Echo', { stage: 'watch' });
+  const products = [a, b, c, d, w];
+  const list = buildComparisons(products, [target('slack', [b, a, c, d, w]), target('teams', [a, b])]);
+  const slugs = list.map(x => x.slug).sort();
+  assert.deepEqual(slugs, ['alfa-vs-bravo', 'alfa-vs-echo', 'bravo-vs-echo'], 'onbeoordeeld en andere categorie vallen af');
+  const ab = list.find(x => x.slug === 'alfa-vs-bravo');
+  assert.equal(ab.targets.length, 2, 'gedeelde doelen worden samengevoegd tot één pagina');
+  assert.equal(ab.a.name, 'Alfa', 'alfabetische volgorde');
+  assert.equal(ab.index, true);
+  assert.equal(list.find(x => x.slug === 'alfa-vs-echo').index, false, 'een paar met Volgen is noindex');
+  assert.deepEqual(a.comparisons.map(x => x.slug).sort(), ['alfa-vs-bravo', 'alfa-vs-echo']);
+  assert.equal(list[0].slug, 'alfa-vs-bravo', 'aanbevolen paren eerst');
+});
+
+test('vergelijkingen: geen pagina zonder tekst van Newground over beide kanten', () => {
+  const a = prod('alfa', 'Alfa'), b = prod('bravo', 'Bravo', { assessment: '', note: '' });
+  assert.equal(buildComparisons([a, b], [target('slack', [a, b])]).length, 0);
+});
+
+test('vergelijkingen: korte adressen, terugval bij botsing, en korte namen', () => {
+  const a = prod('mistral-vibe-voorheen-le-chat', 'Mistral Vibe (voorheen Le Chat)'), b = prod('langdock', 'Langdock');
+  const [c] = buildComparisons([a, b], [target('chatgpt', [a, b])]);
+  assert.equal(c.slug, 'langdock-vs-mistral-vibe');
+  assert.equal(shortName(a), 'Mistral Vibe', 'lange namen zonder haakjes');
+  assert.equal(shortName(prod('x', 'Nextcloud Hub (NL)')), 'Nextcloud Hub (NL)', 'korte namen blijven zoals ze zijn');
+  const x = prod('x1', 'Same (a)'), y = prod('x2', 'Same (b)'), z = prod('z', 'Zed');
+  const list = buildComparisons([x, y, z], [target('t', [x, y, z])]);
+  assert.equal(new Set(list.map(i => i.slug)).size, list.length, 'adressen zijn uniek');
+});
