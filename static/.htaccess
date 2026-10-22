@@ -16,7 +16,12 @@ ErrorDocument 404 /404.html
   </FilesMatch>
 </IfModule>
 
-# Een pagina zonder slash naar de map met slash, zoals in de sitemap.
 RewriteEngine On
+
+# www naar het hoofdadres (een adres per pagina, goed voor Google). HTTPS dwing je af in hPanel (Beveiliging, SSL).
+RewriteCond %{HTTP_HOST} ^www\.alternatievengids\.nl$ [NC]
+RewriteRule ^ https://alternatievengids.nl%{REQUEST_URI} [L,R=301]
+
+# Een pagina zonder slash naar de map met slash, zoals in de sitemap.
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^(.*[^/])$ /$1/ [R=301,L]

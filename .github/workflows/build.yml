@@ -29,6 +29,8 @@ jobs:
         with:
           name: dist
           path: dist
+          # .htaccess is een verborgen bestand en hoort bij de site.
+          include-hidden-files: true
           retention-days: 7
       # Publiceren volgt zodra de hosting vaststaat (Hostinger of een andere Europese host).
       # De map dist/ is de hele site: elke statische host kan hem serveren.
