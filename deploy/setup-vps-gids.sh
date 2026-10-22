@@ -120,13 +120,30 @@ apply_caddy() {
   fi
 }
 
+# Keeps a copy of this script on the server, so it can be run again later (for example with USE_KEY=1 when the repo
+# goes private, and the raw GitHub address no longer works without a login).
+save_self() {
+  local target="$BIN_DIR/alternatievengids-setup" tmp
+  tmp="$(mktemp)"
+  if [ -f "${BASH_SOURCE[0]:-}" ]; then cp "${BASH_SOURCE[0]}" "$tmp"
+  else curl -fsSL "${SELF_URL:-https://raw.githubusercontent.com/rheijmen/alternatievengids/main/deploy/setup-vps-gids.sh}" -o "$tmp" 2>/dev/null || true; fi
+  if head -1 "$tmp" 2>/dev/null | grep -q '^#!/usr/bin/env bash'; then install -m 755 "$tmp" "$target"; fi
+  rm -f "$tmp"
+}
+
 install_updater() {
   cat > "$BIN_DIR/alternatievengids-update" <<EOF2
 #!/usr/bin/env bash
 set -euo pipefail
 $(updater_env)
+before="\$(git -C "$DIR" rev-parse HEAD)"
 git -C "$DIR" fetch -q --depth 1 origin "$BRANCH"
 git -C "$DIR" reset -q --hard FETCH_HEAD
+# Only when something changed: throw away old versions of the site so the disk does not fill up.
+if [ "\$before" != "\$(git -C "$DIR" rev-parse HEAD)" ]; then
+  git -C "$DIR" reflog expire --expire=now --all
+  git -C "$DIR" gc -q --prune=now || true
+fi
 EOF2
   chmod 755 "$BIN_DIR/alternatievengids-update"
   cat > "$UNIT_DIR/alternatievengids-update.service" <<EOF2
@@ -180,6 +197,7 @@ EOF2
 
   say "Site ophalen van GitHub (branch $BRANCH)"
   if [ -d "$DIR/.git" ]; then
+    git -C "$DIR" remote set-url origin "$REPO"
     git -C "$DIR" fetch -q --depth 1 origin "$BRANCH" && git -C "$DIR" reset -q --hard FETCH_HEAD
   else
     rm -rf "$DIR"
@@ -190,6 +208,7 @@ EOF2
 
   say "Automatisch bijwerken elke 5 minuten"
   install_updater
+  save_self
 
   say "Webserver (Caddy)"
   apply_caddy

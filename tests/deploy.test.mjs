@@ -134,3 +134,29 @@ test('hele script via een pipe (curl ... | bash), zoals het op de VPS wordt gebr
   assert.equal(await fs.readFile(path.join(s.dir, 'www', 'index.html'), 'utf8'), '<h1>versie 1</h1>\n');
   assert.match(r.stdout, /Klaar/);
 });
+
+test('opruiming: na een bijwerking zijn oude versies weg, en bij geen wijziging gebeurt er niets', async () => {
+  const s = await fullRun();
+  assert.equal(s.run().status, 0);
+  const www = path.join(s.dir, 'www');
+  const upd = () => spawnSync(path.join(s.bins, 'alternatievengids-update'), { env: s.env, encoding: 'utf8' });
+  assert.equal(upd().status, 0, 'geen wijziging: geen fout');
+  for (let i = 2; i <= 4; i++) {
+    assert.equal(sh(`cd "${s.work}" && echo "<h1>versie ${i}</h1>" > index.html && ${s.git} commit -qam v${i} && git push -q "${s.bare}" site`).status, 0);
+    assert.equal(upd().status, 0);
+  }
+  assert.equal(await fs.readFile(path.join(www, 'index.html'), 'utf8'), '<h1>versie 4</h1>\n');
+  assert.equal(sh(`git -C "${www}" reflog | wc -l`).stdout.trim(), '0', 'de reflog is leeg');
+  assert.equal(sh(`git -C "${www}" count-objects -v | grep -E "^(count|in-pack): " | awk '{s+=$2} END {print s}'`).stdout.trim() <= 6, true, 'alleen de laatste versie is nog in de repo');
+});
+
+test('wisselen tussen openbaar en privé: het bestaande adres wordt aangepast, en een kopie van het script blijft staan', async () => {
+  const s = await fullRun();
+  assert.equal(s.run().status, 0);
+  assert.equal((await fs.stat(path.join(s.bins, 'alternatievengids-setup'))).mode & 0o111, 0o111, 'kopie van het script is uitvoerbaar');
+  const other = path.join(s.dir, 'other.git');
+  assert.equal(sh(`git clone -q --bare "${s.bare}" "${other}"`).status, 0);
+  const r2 = spawnSync('bash', [script], { env: { ...s.env, REPO: other }, encoding: 'utf8' });
+  assert.equal(r2.status, 0, r2.stderr);
+  assert.equal(sh(`git -C "${path.join(s.dir, 'www')}" remote get-url origin`).stdout.trim(), other);
+});
