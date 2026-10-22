@@ -14,14 +14,14 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 1. **Statisch voorgerenderd**, uit de lijst gemaakt na de ochtendsync. Geen app.
 2. **Dezelfde logica als de scan**: de bouw haalt de modules en `data/verdicts.json` van de scan en gebruikt die zelf (zie README). Niets is gekopieerd.
 3. **Kandidaten tonen, met label** "Nog niet beoordeeld". Alleen beoordeeld/goedgekeurd tonen was het advies; Rik koos de ruimere variant. Daarom zijn die pagina's `noindex` (zie hieronder) en toont een kandidaat alleen neutrale feiten.
-4. **Hosting:** starten op Hostinger en later eventueel verhuizen. De bouw levert een map (`dist/`) op die elke statische host kan serveren, dus verhuizen kost niets.
+4. **Hosting:** op de VPS van de scan, later eventueel verhuizen. De bouw levert een map (`dist/`) op die elke statische host kan serveren, dus verhuizen kost niets.
 5. **Uitstraling:** rustig en overzichtelijk zoals european-alternatives.eu (die site was vanuit de sandbox niet te bekijken; de opzet is gebouwd op het bekende patroon: zoekveld bovenaan, tegels per product en categorie, rustige lijsten met filters), in Newgrounds eigen stijl (zwart-wit, arcering, Baloo 2) uit de scan.
 6. **Newground is zelf sponsor:** een duidelijk gemarkeerde sponsorbanner ("Sponsor", `rel="sponsored"`), en onderaan elke pagina drie lege sponsorvakken met een plus. Klik opent een voorgevulde mail aan Rik. Er is een pagina `/sponsor/`.
 7. **Analytics:** Simple Analytics, zoals op newground.nl (script en noscript-pixel). De badge staat uit (`analytics.badge` in `data/site.json`).
 8. **Inzenden:** een modal (ook als eigen pagina `/dien-in/`) waarin je kiest: gebruiker of fan, producent of leverancier. Basisvelden plus toelichting. Producent en leverancier moeten aankruisen dat ze updates willen doorgeven en vragen willen beantwoorden; voor een fan is dat optioneel.
 
 9. **Kandidaten blijven `noindex` tot ze getoetst zijn.** Een product wordt vanzelf indexeerbaar zodra de Filter het goedkeurt of Rik een oordeel zet.
-10. **Hosting start op Hostinger webhosting** (dist/ uploaden, zoals newground.nl), niet op de VPS van de scan. Simple Analytics laadt daarom vooralsnog van Simple Analytics zelf.
+10. **Hosting op de VPS van de scan** (Rik, 22 oktober; eerder was webhosting bedoeld). Simple Analytics laadt van Simple Analytics zelf; via het eigen domein laten lopen kan nu wel (Caddy), als vervolgstap.
 11. **AI-zoekers en assistenten mogen alles lezen en citeren** (robots.txt staat het toe, `llms.txt` helpt). Bronvermelding voor CC BY-SA-gegevens blijft verplicht.
 12. **Volgende uitbreidingen, in deze volgorde:** vergelijkpagina's (gedaan, zie hieronder), use-case pagina's ("Slack vervangen voor een stichting") en een pagina "Gewijzigd deze maand". Nieuwsbrief via Brevo: nog niet gekozen.
 
@@ -37,7 +37,7 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 ## Wat Rik nog moet doen
 
 1. **Draft-PR bekijken** en laten weten wat anders moet (zie de vragen onderaan het gesprek).
-2. **Hosting en domein:** stap voor stap in `docs/HOSTINGER.md`. Hostinger-pakket kiezen of de VPS van de scan gebruiken. Op de VPS moet eerst `setup-vps.sh` in sovereignos een tweede site aankunnen (het overschrijft nu de Caddyfile; voorbeeld in `deploy/Caddyfile.example`). Bij gewone Hostinger-hosting: `dist/` uploaden (`static/.htaccess` zit erbij). Daarna het A-record van alternatievengids.nl. De GitHub-workflow bouwt en controleert al elke ochtend; publiceren volgt na de hostingkeuze.
+2. **Hosting en domein (besluit Rik, 22 oktober):** op de VPS van de scan, domein bij Hostinger. Stap voor stap in `docs/HOSTING.md`. Daarna het script `deploy/setup-vps-gids.sh` op de VPS draaien en twee DNS-records zetten. GitHub bouwt elke ochtend en zet de site op de branch `site`; de VPS haalt die elke 5 minuten op. Let op: `setup-vps.sh` van de scan overschrijft de Caddyfile; zie `docs/HOSTING.md`.
 3. **Simple Analytics:** alternatievengids.nl toevoegen als site in het account (anders telt hij niets).
 4. **Inzendingen laten aankomen:** nu opent het formulier een ingevulde mail (werkt direct). Voor Baserow: een Make-webhook of eigen endpoint, het webadres in `submit.endpoint` in `data/site.json` zetten, en de privacyverklaring wordt dan vanzelf aangepast. De webhook moet CORS toestaan, anders valt het formulier terug op de mail. Nieuwe Baserow-kolommen nodig (de Baserow-tool kan ze niet maken): *Indiener rol*, *Indiener naam*, *Indiener e-mail*, *Bereid tot updates*, *Inzending toelichting*, *Ingediend op*. De rest past op bestaande kolommen: Name, Website, Replaces, HQ / legal entity, Open source, *Gidsstatus* = Kandidaat, *Toegevoegd door* = "Bezoeker (rol)".
 5. **Teksten controleren die uitspraken doen over jou en Newground:** `/hoe-we-beoordelen/` (zegt dat AI-assistenten een deel van het zoeken en toetsen doen maar nooit een oordeel geven; "sponsoring koopt zichtbaarheid, geen oordeel"), `/over/` en `/sponsor/`. En de belangenlijst (`belangen.ids` in `data/site.json`: nextcloud-hub, nc-talk, nc-files; afgeleid van "Newground offers Nextcloud itself" in Baserow): klopt die?
