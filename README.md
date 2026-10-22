@@ -39,7 +39,8 @@ scripts/lib/render.mjs    layout, sponsor, formulier en modal, analytics, CSP
 scripts/lib/site.mjs      bouwt alles naar dist/, plus sitemap, robots.txt, llms.txt, zoek.json
 scripts/check.mjs         controle van de gebouwde site
 static/                   css, js, lettertypen, logo (overgenomen uit de scan), .htaccess
-deploy/                   voorbeeld Caddyfile
+deploy/                   setup-vps-gids.sh (installatie op de VPS), voorbeeld Caddyfile
+docs/HOSTING.md           stappen om de site online te zetten
 ```
 
 ## Pagina's
