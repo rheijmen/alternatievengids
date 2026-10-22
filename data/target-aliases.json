@@ -1,0 +1,13 @@
+{
+  "microsoft onedrive": "onedrive",
+  "microsoft copilot": "copilot",
+  "chatgpt team": "chatgpt",
+  "chatgpt team enterprise": "chatgpt",
+  "claude team": "claude",
+  "google drive docs": "gdrive",
+  "microsoft dynamics": "dynamics",
+  "whatsapp": "whatsapp",
+  "exchange online": "m365",
+  "microsoft teams": "teams",
+  "google meet": "gmeet"
+}

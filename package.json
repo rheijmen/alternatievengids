@@ -1,0 +1,14 @@
+{
+  "name": "alternatievengids",
+  "version": "0.1.0",
+  "private": true,
+  "description": "alternatievengids.nl: statische gids met Europese alternatieven voor Big Tech, gebouwd uit dezelfde lijst en regels als de Soevereiniteitsscan van Newground.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "preview": "node scripts/preview.mjs"
+  }
+}

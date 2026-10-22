@@ -1,0 +1,48 @@
+{
+  "name": "Alternatievengids",
+  "tagline": "Europese alternatieven voor Big Tech",
+  "siteUrl": "https://alternatievengids.nl",
+  "language": "nl",
+  "scanUrl": "https://scan.newground.nl/",
+  "newgroundUrl": "https://newground.nl",
+  "bookingUrl": "https://zeeg.me/newground/discovery",
+  "analytics": {
+    "simpleAnalytics": true,
+    "badge": false
+  },
+  "indexUnrated": false,
+  "submit": {
+    "endpoint": null,
+    "mailTo": "rik.heijmen@newground.nl"
+  },
+  "sponsorMail": {
+    "to": "rik.heijmen@newground.nl",
+    "subject": "Sponsoring alternatievengids.nl"
+  },
+  "sponsorSlots": [
+    null,
+    null,
+    null
+  ],
+  "belangen": {
+    "ids": [
+      "nextcloud-hub",
+      "nc-talk",
+      "nc-files"
+    ],
+    "text": "Newground levert dit product zelf als dienst. Dat weegt niet mee in het oordeel, maar je moet het wel weten."
+  },
+  "minSectorPage": 3,
+  "targetNames": {
+    "chatgpt": "ChatGPT",
+    "copilot": "Microsoft Copilot",
+    "onedrive": "OneDrive en SharePoint",
+    "exchange": "Exchange Server",
+    "whatsapp": "WhatsApp",
+    "dynamics": "Microsoft Dynamics 365"
+  },
+  "hosting": {
+    "provider": "Hostinger"
+  },
+  "privacyDate": "2026-10-22"
+}
