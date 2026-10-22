@@ -20,6 +20,11 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 7. **Analytics:** Simple Analytics, zoals op newground.nl (script en noscript-pixel). De badge staat uit (`analytics.badge` in `data/site.json`).
 8. **Inzenden:** een modal (ook als eigen pagina `/dien-in/`) waarin je kiest: gebruiker of fan, producent of leverancier. Basisvelden plus toelichting. Producent en leverancier moeten aankruisen dat ze updates willen doorgeven en vragen willen beantwoorden; voor een fan is dat optioneel.
 
+9. **Kandidaten blijven `noindex` tot ze getoetst zijn.** Een product wordt vanzelf indexeerbaar zodra de Filter het goedkeurt of Rik een oordeel zet.
+10. **Hosting start op Hostinger webhosting** (dist/ uploaden, zoals newground.nl), niet op de VPS van de scan. Simple Analytics laadt daarom vooralsnog van Simple Analytics zelf.
+11. **AI-zoekers en assistenten mogen alles lezen en citeren** (robots.txt staat het toe, `llms.txt` helpt). Bronvermelding voor CC BY-SA-gegevens blijft verplicht.
+12. **Volgende uitbreidingen, in deze volgorde:** vergelijkpagina's ("Nextcloud of ownCloud"), use-case pagina's ("Slack vervangen voor een stichting") en een pagina "Gewijzigd deze maand". Nieuwsbrief via Brevo: nog niet gekozen.
+
 ## Wat er staat
 
 - 222 producten (32 beoordeeld, 190 nog niet), 119 doelen waarvan 74 met een eigen pagina, 24 categorieen, 1 sectorpagina (Overheid). Tellingen staan in `dist/build.json` na een bouw.
@@ -58,6 +63,10 @@ Gebruik dezelfde lijst als de scan, zodat er één lijst is om bij te houden. Ni
 ## Backlog (nog niet gebouwd)
 
 - Open Graph-afbeelding (nu alleen tekst), PNG-favicon.
+- **Eerstvolgend (besluit Rik, 22 oktober):**
+  - Vergelijkpagina's: genereren uit de lijst voor producten die hetzelfde doel vervangen. Alleen feiten uit de data; geen verzonnen vergelijking.
+  - Use-case pagina's: vragen redactie van Rik of Newground (we verzinnen geen praktijkverhalen); een sjabloon met verwijzing naar de scan en een klankbordgesprek kan wel vooraf.
+  - Gewijzigd deze maand: vraagt dat de bouw het vorige `verdicts.json` bewaart om verschillen te zien (bijvoorbeeld `data/snapshots/` of een artifact van de vorige bouw). Eerst ontwerpen.
 - Nieuwsbrief via Brevo (Frans) met nieuwe alternatieven en eigendomsalarmen: nog geen besluit.
 - Koppeling scan: "Gebruik je X?" opent de scan nu op de startpagina. De scan heeft geen route om een product voor te selecteren; als die er komt, kan elke Gids-pagina de scan met dat product starten.
 - Forum of reacties: pas later, vraagt moderatie.
