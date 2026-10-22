@@ -1,7 +1,7 @@
 // All pages of the Gids. Each builder returns { path, html, index } so the sitemap knows what to list.
 
 import { esc, lead, fit, nl, dateNl, isoDay } from './text.mjs';
-import { STAGES, STAGE_LABEL, CATEGORY_LABEL, targetHasPage } from './model.mjs';
+import { STAGES, STAGE_LABEL, CATEGORY_LABEL, targetHasPage, shortName } from './model.mjs';
 import { layout, link, badge, mailto, sponsorBanner, submitForm, scanCta, faqHtml, faqLd, breadcrumbs, organizationLd, meter } from './render.mjs';
 
 const OPEN = { yes: 'Ja', core: 'Gedeeltelijk (open core)', no: 'Nee' };
@@ -148,6 +148,7 @@ function productPage(ctx, p) {
       ${reps.length ? `<section><h2>Vervangt</h2><ul class="chips chips-lg">${reps.map(r => { const t = ctx.model.targets.find(x => x.key === r.key); return `<li>${t && targetHasPage(t) ? link(targetPath(t), esc(r.name)) : esc(r.name)}</li>`; }).join('')}</ul></section>` : ''}
       ${p.sources.length ? `<section><h2>Bronnen</h2><ul class="plain sources">${p.sources.map(s => `<li>${link(s, esc(s.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')), 'rel="noopener" target="_blank"')}</li>`).join('')}</ul></section>` : ''}
       ${other.length ? `<section><h2>Andere alternatieven voor ${esc(reps[0].name)}</h2><ul class="items">${other.map(item).join('')}</ul></section>` : ''}
+      ${p.comparisons?.length ? `<section><h2>Vergelijk ${esc(shortName(p))} met</h2><ul class="chips chips-lg">${p.comparisons.slice(0, 6).map(c => `<li>${link(comparePath(c), esc(shortName(c.a === p ? c.b : c.a)))}</li>`).join('')}</ul></section>` : ''}
     </div>
     <aside class="product-side">
       <h2 class="visually-lead">Feiten</h2>
@@ -201,6 +202,7 @@ function targetPage(ctx, t) {
     ...(us ? [[`Waarom een alternatief voor ${t.name} zoeken?`, `${esc(t.name)} komt van ${esc(t.vendor || 'een Amerikaans bedrijf')}, een Amerikaans bedrijf. Daarmee valt de dienst onder Amerikaanse wetgeving zoals de CLOUD Act, ook als je gegevens in een Europees datacenter staan. Een Europees alternatief valt onder Europese wet.`]] : []),
     [`Hoe weet ik hoe afhankelijk mijn organisatie van ${t.name} is?`, `Doe de gratis ${link(site.scanUrl, 'Soevereiniteitsscan')} van Newground. In ongeveer vijf minuten zie je welke systemen je gebruikt, hoe afhankelijk je bent van Amerikaanse leveranciers en wat een eerste stap is.`],
   ];
+  const compares = model.comparisons.filter(c => c.targets.includes(t)).slice(0, 8);
   const relatedTargets = model.targets.filter(x => x !== t && targetHasPage(x) && t.category && x.category === t.category).slice(0, 8);
 
   const body = `${bc.html}
@@ -213,6 +215,7 @@ ${us ? `<p class="context">${esc(t.name)} is van ${esc(t.vendor || 'een Amerikaa
 ${sponsorBanner(ctx)}
 ${t.products.length > 3 ? filters() : ''}
 <div data-filterable>${grouped(t.products)}</div>
+${compares.length ? `<section class="related"><h2>Vergelijk de beoordeelde alternatieven</h2><ul class="chips chips-lg">${compares.map(c => `<li>${link(comparePath(c), `${esc(shortName(c.a))} of ${esc(shortName(c.b))}`)}</li>`).join('')}</ul></section>` : ''}
 ${scanCta(ctx, `Gebruik je ${esc(t.name)}? Doe de gratis Soevereiniteitsscan van Newground en zie in ongeveer vijf minuten hoe afhankelijk je organisatie is en wat een eerste stap is.`)}
 ${faqHtml(faq)}
 ${relatedTargets.length ? `<section class="related"><h2>Meer alternatieven in ${esc(lc(CATEGORY_LABEL[t.category]))}</h2><ul class="chips chips-lg">${relatedTargets.map(x => `<li>${link(targetPath(x), esc(x.name))}</li>`).join('')}</ul></section>` : ''}`;
@@ -229,6 +232,132 @@ ${relatedTargets.length ? `<section class="related"><h2>Meer alternatieven in ${
       description: trim(`Europees alternatief voor ${t.name}? ${targetAnswer(t)} Met oordeel en bronnen van Newground.`), body, jsonld: ld, modified: model.generated,
     }),
   };
+}
+
+// ---- Comparison ("A of B") -----------------------------------------------------------------------------------
+// Everything on these pages comes from the data Newground keeps for both products; nothing is invented.
+
+const comparePath = c => `/vergelijk/${c.slug}/`;
+const verdictWord = stage => `"${STAGE_LABEL[stage]}"`;
+const OPEN_WORD = { yes: 'open source', core: 'open core', no: 'niet open source' };
+
+function differences(a, b) {
+  const A = shortName(a), B = shortName(b), out = [];
+  if (a.openSource && b.openSource && a.openSource !== b.openSource) out.push(`${A} is ${OPEN_WORD[a.openSource]}, ${B} is ${OPEN_WORD[b.openSource]}.`);
+  if (a.country && b.country && a.country.code !== b.country.code) out.push(`${A} komt uit ${a.country.name}, ${B} uit ${b.country.name}.`);
+  const da = a.delivery.map(d => DELIVERY[d] || d).join(', '), db = b.delivery.map(d => DELIVERY[d] || d).join(', ');
+  if (da && db && da !== db) out.push(`Levering. ${A}: ${da.toLowerCase().replace('saas', 'SaaS')}. ${B}: ${db.toLowerCase().replace('saas', 'SaaS')}.`);
+  if (Boolean(a.govSupplier) !== Boolean(b.govSupplier)) out.push(`${a.govSupplier ? A : B} voldoet aan de overheidseisen die Newground controleert; bij ${a.govSupplier ? B : A} is dat niet bevestigd.`);
+  if (Boolean(a.smbFit) !== Boolean(b.smbFit)) out.push(`${a.smbFit ? A : B} past bij organisaties van 30 tot 300 medewerkers; bij ${a.smbFit ? B : A} is dat niet bevestigd.`);
+  if (a.govUse.length !== b.govUse.length) {
+    const n = (k, name) => (k ? `${k} bij ${name}` : `geen bij ${name}`);
+    out.push(`Newground kent overheidsreferenties: ${n(a.govUse.length, A)}, ${n(b.govUse.length, B)}.`);
+  }
+  if (a.stage !== b.stage) out.push(`Newground geeft ${A} het oordeel ${verdictWord(a.stage)} en ${B} ${verdictWord(b.stage)}.`);
+  return out;
+}
+
+function compareAnswer(c) {
+  const { a, b } = c, A = shortName(a), B = shortName(b);
+  const parts = [a.stage === b.stage
+    ? `Newground geeft ${A} en ${B} hetzelfde oordeel: ${verdictWord(a.stage)}.`
+    : `Newground geeft ${A} het oordeel ${verdictWord(a.stage)} en ${B} ${verdictWord(b.stage)}.`];
+  parts.push(`Beide zijn een alternatief voor ${nl(c.targets.map(t => t.name).slice(0, 4))}.`);
+  const diffs = differences(a, b).filter(d => !d.startsWith('Newground geeft'));
+  parts.push(...diffs.slice(0, 2));
+  if (!diffs.length) parts.push('Op de gegevens die Newground bijhoudt lijken ze op elkaar; lees de beoordelingen voor de verschillen.');
+  return parts.join(' ');
+}
+
+export const comparisonSummary = c => compareAnswer(c);
+
+function compareTitle(c) {
+  const A = shortName(c.a), B = shortName(c.b);
+  const base = n => n.replace(/\s*\([^)]*\)/g, '').split(' / ')[0].trim();
+  const fits = t => t.length + 21 <= 68;
+  return [`${A} of ${B}: vergelijking`, `${A} of ${B}`, `${base(A)} of ${base(B)}: vergelijking`, `${base(A)} of ${base(B)}`].find(fits) || `${base(A)} of ${base(B)}`;
+}
+
+function compareLinks(c, list) {
+  return list.filter(x => x !== c).slice(0, 6).map(x => `<li>${link(comparePath(x), `${esc(shortName(x.a))} of ${esc(shortName(x.b))}`)}</li>`).join('');
+}
+
+function comparePage(ctx, c) {
+  const { site, model } = ctx;
+  const { a, b } = c, A = shortName(a), B = shortName(b);
+  const path = comparePath(c);
+  const bc = breadcrumbs(ctx, [['/', 'Start'], ['/vergelijk/', 'Vergelijken'], [path, `${A} of ${B}`]]);
+  const answer = compareAnswer(c);
+  const val = (p, k) => ({
+    stage: badge(p.stage),
+    country: p.country ? esc(p.country.name) : 'Nog niet gecontroleerd',
+    vendor: p.vendor ? esc(p.vendor) : '',
+    open: p.openSource ? OPEN[p.openSource] : '',
+    delivery: p.delivery.map(d => DELIVERY[d] || d).join(', '),
+    gov: p.govUse.length ? `${plural(p.govUse.length, 'referentie', 'referenties')} bij overheden` : 'Geen referentie bekend bij Newground',
+    govSupplier: p.govSupplier ? 'Bevestigd' : 'Niet bevestigd',
+    smb: p.smbFit ? 'Geschikt' : 'Niet bevestigd',
+    checked: p.checked ? esc(dateNl(p.checked)) : '',
+    replaces: p.replaces.slice(0, 6).map(r => esc(r.name)).join(', '),
+  })[k];
+  const rows = [
+    ['Oordeel van Newground', 'stage'], ['Hoofdkantoor', 'country'], ['Bedrijf', 'vendor'], ['Open source', 'open'], ['Levering', 'delivery'],
+    ['Door overheden gebruikt', 'gov'], ['Overheidseisen', 'govSupplier'], ['Mkb (30 tot 300 medewerkers)', 'smb'], ['Laatst gecontroleerd', 'checked'], ['Vervangt', 'replaces'],
+  ].filter(([, k]) => val(a, k) || val(b, k));
+  const table = `<table class="compare">
+  <caption class="visually-hidden">Vergelijking van ${esc(A)} en ${esc(B)}</caption>
+  <thead><tr><td></td><th scope="col"><a href="${productPath(a)}">${esc(A)}</a></th><th scope="col"><a href="${productPath(b)}">${esc(B)}</a></th></tr></thead>
+  <tbody>${rows.map(([label, k]) => `<tr><th scope="row">${label}</th><td>${val(a, k) || '<span class="muted">Onbekend</span>'}</td><td>${val(b, k) || '<span class="muted">Onbekend</span>'}</td></tr>`).join('')}</tbody>
+</table>`;
+  const sayings = [a, b].map(p => `<section class="saying"><h3><a href="${productPath(p)}">${esc(shortName(p))}</a> ${badge(p.stage)}</h3>${p.assessment ? `<blockquote class="assessment">${esc(p.assessment)}</blockquote>` : `<p>${esc(p.note)}</p>`}${p.checked ? `<p class="hint">Laatst gecontroleerd op ${esc(dateNl(p.checked))}.</p>` : ''}</section>`).join('');
+  const diffs = differences(a, b);
+  const notes = [a, b].filter(p => p.belang).map(p => `<p class="notice notice-belang"><strong>Belang.</strong> ${esc(shortName(p))}: ${esc(site.belangen.text)}</p>`).join('') +
+    [a, b].filter(p => p.review).map(p => `<p class="notice">Bij ${esc(shortName(p))} is er nieuws over een overname of nieuwe eigenaar. Newground bekijkt dit oordeel opnieuw.</p>`).join('');
+  const faq = [
+    [`Wat is het verschil tussen ${A} en ${B}?`, esc(answer)],
+    [`Welke adviseert Newground: ${A} of ${B}?`, a.stage === b.stage
+      ? `Newground geeft beide hetzelfde oordeel (${esc(verdictWord(a.stage))}). Welke past, hangt af van je situatie; lees per product de beoordeling.`
+      : `Newground geeft ${esc(A)} het oordeel ${esc(verdictWord(a.stage))} en ${esc(B)} ${esc(verdictWord(b.stage))}. Lees per product de beoordeling.`],
+    ...(a.openSource && b.openSource ? [[`Zijn ${A} en ${B} open source?`, `${esc(A)} is ${OPEN_WORD[a.openSource]} en ${esc(B)} is ${OPEN_WORD[b.openSource]}.`]] : []),
+  ];
+  const body = `${bc.html}
+<header class="page-head">
+  <p class="kicker">Vergelijking</p>
+  <h1>${esc(A)} of ${esc(B)}</h1>
+  <p class="lead">Twee Europese alternatieven voor ${esc(nl(c.targets.map(t => t.name).slice(0, 3)))}, naast elkaar. Alle gegevens komen uit de lijst van Newground.</p>
+</header>
+<p class="answer"><strong>Kort antwoord.</strong> ${esc(answer)} <span class="updated">Bijgewerkt op ${esc(dateNl(model.generated))}.</span></p>
+${notes}
+${sponsorBanner(ctx)}
+<section><h2>De gegevens naast elkaar</h2><div class="table-wrap">${table}</div></section>
+${diffs.length ? `<section><h2>Waar ze op verschillen</h2><ul class="plain">${diffs.map(d => `<li>${esc(d)}</li>`).join('')}</ul></section>` : ''}
+<section><h2>Wat Newground zegt</h2><div class="sayings">${sayings}</div></section>
+${scanCta(ctx, `Gebruik je ${esc(c.targets[0].name)}? Doe de gratis Soevereiniteitsscan van Newground en zie in ongeveer vijf minuten hoe afhankelijk je organisatie is en wat een eerste stap is.`)}
+${faqHtml(faq)}
+<section class="related"><h2>Meer vergelijken</h2><ul class="chips chips-lg">${compareLinks(c, [...a.comparisons, ...b.comparisons].filter((x, i, all) => all.indexOf(x) === i))}</ul>
+<p class="hint">${c.targets.map(t => link(targetPath(t), `Alle alternatieven voor ${esc(t.name)}`)).join(' · ')}</p></section>`;
+
+  const ld = [organizationLd(ctx), bc.ld, faqLd(faq), {
+    '@context': 'https://schema.org', '@type': 'WebPage', name: `${A} of ${B}`, url: site.siteUrl + path, dateModified: isoDay(model.generated),
+    isPartOf: { '@type': 'WebSite', name: site.name, url: site.siteUrl + '/' }, publisher: { '@id': site.newgroundUrl + '/#organization' },
+    about: [a, b].map(p => ({ '@type': 'SoftwareApplication', name: shortName(p), applicationCategory: CATEGORY_LABEL[p.category], url: site.siteUrl + productPath(p) })),
+  }];
+  return {
+    path, index: c.index,
+    html: layout(ctx, { path, title: compareTitle(c), description: trim(`${A} of ${B}? ${answer}`), body, jsonld: ld, robots: c.index ? 'index,follow' : 'noindex,follow', modified: model.generated }),
+  };
+}
+
+function comparisonsIndex(ctx) {
+  const all = ctx.model.comparisons;
+  const bc = breadcrumbs(ctx, [['/', 'Start'], ['/vergelijk/', 'Vergelijken']]);
+  const byCat = new Map();
+  for (const c of all) (byCat.get(c.category) || byCat.set(c.category, []).get(c.category)).push(c);
+  const body = `${bc.html}
+<header class="page-head"><h1>Europese alternatieven vergelijken</h1><p class="lead">Twee alternatieven naast elkaar: oordeel van Newground, land, open source, levering en overheidsreferenties. Alleen producten die Newground heeft beoordeeld.</p></header>
+${[...byCat.entries()].sort((x, y) => CATEGORY_LABEL[x[0]].localeCompare(CATEGORY_LABEL[y[0]], 'nl')).map(([cat, list]) => `<section class="letter"><h2>${esc(CATEGORY_LABEL[cat])} <span class="count">${list.length}</span></h2><ul class="list-cols">${list.map(c => `<li><a href="${comparePath(c)}">${esc(shortName(c.a))} of ${esc(shortName(c.b))}</a></li>`).join('')}</ul></section>`).join('')}
+${scanCta(ctx)}`;
+  return { path: '/vergelijk/', index: true, html: layout(ctx, { path: '/vergelijk/', title: 'Europese alternatieven vergelijken', description: `${all.length} vergelijkingen van Europese en open-source alternatieven, met het oordeel van Newground.`, body, jsonld: [organizationLd(ctx), bc.ld], modified: ctx.model.generated }) };
 }
 
 // ---- Listings ------------------------------------------------------------------------------------------------
@@ -319,6 +448,8 @@ function homePage(ctx) {
 ${sponsorBanner(ctx)}
 <section aria-labelledby="h-targets"><div class="section-head"><h2 id="h-targets">Welk product wil je vervangen?</h2><a href="/alternatief-voor/">Alle ${pages.length} producten</a></div>
 <ul class="tiles">${popular.map(t => `<li><a class="tile" href="${targetPath(t)}"><span class="tile-name">${esc(t.name)}</span><span class="tile-count">${plural(t.products.length, 'alternatief', 'alternatieven')}${t.rated ? `, ${t.rated} beoordeeld` : ''}</span></a></li>`).join('')}</ul></section>
+${model.comparisons.length ? `<section aria-labelledby="h-cmp"><div class="section-head"><h2 id="h-cmp">Twee alternatieven vergelijken</h2><a href="/vergelijk/">Alle ${model.comparisons.length} vergelijkingen</a></div>
+<ul class="tiles">${model.comparisons.filter(c => c.index).slice(0, 6).map(c => `<li><a class="tile" href="${comparePath(c)}"><span class="tile-name">${esc(shortName(c.a))} of ${esc(shortName(c.b))}</span><span class="tile-count">alternatief voor ${esc(c.targets[0].name)}</span></a></li>`).join('')}</ul></section>` : ''}
 <section aria-labelledby="h-cats"><div class="section-head"><h2 id="h-cats">Of zoek op soort software</h2><a href="/categorie/">Alle categorieën</a></div>
 <ul class="tiles tiles-sm">${model.categories.slice(0, 12).map(c => `<li><a class="tile" href="/categorie/${c.slug}/"><span class="tile-name">${esc(c.label)}</span><span class="tile-count">${c.products.length}</span></a></li>`).join('')}</ul></section>
 <section class="progress" aria-labelledby="h-prog"><h2 id="h-prog">De gids groeit</h2>
@@ -491,6 +622,7 @@ export function buildPages(ctx) {
   const pages = [
     homePage(ctx), targetsIndex(ctx), productsIndex(ctx), categoriesIndex(ctx),
     howPage(ctx), aboutPage(ctx), sourcesPage(ctx), sponsorPage(ctx), submitPage(ctx), privacyPage(ctx), notFoundPage(ctx),
+    ...(model.comparisons.length ? [comparisonsIndex(ctx)] : []), ...model.comparisons.map(c => comparePage(ctx, c)),
     ...model.targets.filter(targetHasPage).map(t => targetPage(ctx, t)),
     ...model.products.map(p => productPage(ctx, p)),
     ...model.categories.map(c => categoryPage(ctx, c)),

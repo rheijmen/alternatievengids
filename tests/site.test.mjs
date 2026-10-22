@@ -85,3 +85,30 @@ test('rangschikking komt overeen met die van de scan (alternativesForTask)', { s
     assert.deepEqual(ranks, [...ranks].sort((a, b) => a - b), `volgorde bij ${task.id}`);
   }
 });
+
+test('vergelijkpagina\'s: alleen beoordeelde producten, tabel, noindex bij Volgen, in sitemap alleen aanbevolen paren', { skip }, async () => {
+  const { model } = result.ctx;
+  assert.ok(model.comparisons.length > 10, 'er zijn vergelijkingen');
+  const sitemap = await fs.readFile(path.join(out, 'sitemap.xml'), 'utf8');
+  for (const c of model.comparisons) {
+    assert.notEqual(c.a.stage, 'unrated'); assert.notEqual(c.b.stage, 'unrated');
+    assert.ok(c.a.name.localeCompare(c.b.name, 'nl') <= 0, 'alfabetische volgorde');
+    const html = await fs.readFile(path.join(out, 'vergelijk', c.slug, 'index.html'), 'utf8');
+    assert.match(html, /<table class="compare">/);
+    assert.ok(html.includes(`href="/alternatieven/${c.a.slug}/"`) && html.includes(`href="/alternatieven/${c.b.slug}/"`));
+    assert.equal(sitemap.includes(`/vergelijk/${c.slug}/`), c.index, `sitemap volgt index voor ${c.slug}`);
+    assert.equal(/name="robots" content="noindex/.test(html), !c.index);
+  }
+  assert.ok(model.comparisons.some(c => !c.index) && model.comparisons.some(c => c.index));
+});
+
+test('vergelijkingen zijn vindbaar: footer, startpagina, productpagina, doelpagina en llms.txt', { skip }, async () => {
+  const c = result.ctx.model.comparisons.find(x => x.index);
+  const read = (...p) => fs.readFile(path.join(out, ...p), 'utf8');
+  assert.match(await read('index.html'), /href="\/vergelijk\/"/);
+  assert.match(await read('alternatieven', c.a.slug, 'index.html'), new RegExp(`/vergelijk/${c.slug}/`));
+  assert.match(await read('alternatief-voor', c.targets[0].slug, 'index.html'), /Vergelijk de beoordeelde alternatieven/);
+  assert.match(await read('llms.txt'), new RegExp(`/vergelijk/${c.slug}/`));
+  const faq = await read('vergelijk', c.slug, 'index.html');
+  assert.ok(!/"text":"[^"]*&(quot|amp|#39);/.test(faq), 'geen HTML-tekens in FAQ-schema');
+});

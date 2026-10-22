@@ -267,8 +267,50 @@ export function buildModel(scan, site, { aliases = {} } = {}) {
 
   return {
     generated: scan.data.generated || '', stats, products, targets: [...targets.values()], categories: [...categories.values()].sort((a, b) => a.label.localeCompare(b.label, 'nl')),
-    sectors, excluded, rank,
+    sectors, excluded, rank, comparisons: buildComparisons(products, [...targets.values()]),
   };
+}
+
+// ---- Comparisons ---------------------------------------------------------------------------------------------
+// "A or B" pages. Only products that Newground has assessed (a page that compares two unchecked entries would be
+// a guess), in the same category, that replace at least one product in common. One page per pair, in
+// alphabetical order. A pair is indexed only when both are Advise or Conditional; a comparison with a product
+// that is only followed (Watch) stays visible but noindex, like any other page about something not recommended yet.
+
+const INDEXABLE = new Set(['advise', 'conditional']);
+
+export function shortName(p) {
+  const n = p.name.replace(/\s*\([^)]*\)/g, '').trim();
+  return p.name.length > 26 && n.length >= 3 ? n : p.name;
+}
+
+export function buildComparisons(products, targets) {
+  const pairs = new Map();
+  for (const t of targets) {
+    const rated = t.products.filter(p => p.stage !== 'unrated');
+    for (let i = 0; i < rated.length; i++) for (let j = i + 1; j < rated.length; j++) {
+      const [a, b] = [rated[i], rated[j]].sort((x, y) => x.name.localeCompare(y.name, 'nl') || x.slug.localeCompare(y.slug));
+      if (a.category !== b.category) continue;
+      if (!(a.assessment || a.note) || !(b.assessment || b.note)) continue;
+      const key = `${a.slug}|${b.slug}`;
+      if (!pairs.has(key)) pairs.set(key, { a, b, category: a.category, targets: [] });
+      pairs.get(key).targets.push(t);
+    }
+  }
+  // Short addresses ("mistral-vibe-vs-langdock"); on a clash the full product addresses are used.
+  const plain = p => slugify(p.name.replace(/\s*\([^)]*\)/g, '').trim() || p.name);
+  const used = new Set();
+  const list = [...pairs.values()].map(c => {
+    let slug = `${plain(c.a)}-vs-${plain(c.b)}`;
+    if (used.has(slug)) slug = `${c.a.slug}-vs-${c.b.slug}`;
+    used.add(slug);
+    return { ...c, slug, index: INDEXABLE.has(c.a.stage) && INDEXABLE.has(c.b.stage) };
+  });
+  // Most useful first: both recommended, then more products in common, then alphabetical.
+  list.sort((x, y) => Number(y.index) - Number(x.index) || y.targets.length - x.targets.length || x.slug.localeCompare(y.slug));
+  for (const p of products) p.comparisons = [];
+  for (const c of list) { c.a.comparisons.push(c); c.b.comparisons.push(c); }
+  return list;
 }
 
 // Whether a target is worth its own page: at least one product, and for a name that is only free text

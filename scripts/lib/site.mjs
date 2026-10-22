@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { loadScan } from './scan.mjs';
 import { buildModel, targetHasPage, STAGE_LABEL } from './model.mjs';
-import { buildPages } from './pages.mjs';
+import { buildPages, comparisonSummary } from './pages.mjs';
 import { isoDay, lead } from './text.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -61,7 +61,7 @@ ${link('Bronnen en voortgang', '/bronnen/')}
 ## Europees alternatief voor...
 ${targets.slice(0, 60).map(t => link(`Europees alternatief voor ${t.name}`, `/alternatief-voor/${t.slug}/`, lead(`${t.products.length} alternatieven, ${t.rated} beoordeeld`, 80))).join('\n')}
 
-## Optional
+${model.comparisons.some(c => c.index) ? `## Vergelijkingen\n${model.comparisons.filter(c => c.index).slice(0, 40).map(c => link(`${c.a.name} of ${c.b.name}`, `/vergelijk/${c.slug}/`)).join('\n')}\n\n` : ''}## Optional
 ${link('Over deze gids', '/over/')}
 ${link('Soevereiniteitsscan van Newground', '/').replace(site.siteUrl + '/', site.scanUrl)}
 - Volledige tekst: ${site.siteUrl}/llms-full.txt
@@ -71,6 +71,7 @@ ${link('Soevereiniteitsscan van Newground', '/').replace(site.siteUrl + '/', sit
     full.push(`\n## Europees alternatief voor ${t.name}\n${site.siteUrl}/alternatief-voor/${t.slug}/\n`);
     for (const p of t.products) full.push(`- ${p.name} (${STAGE_LABEL[p.stage]}${p.country ? `, ${p.country.name}` : ''}): ${p.summary || 'nog niet beoordeeld door Newground'}`);
   }
+  for (const c of model.comparisons.filter(x => x.index)) full.push(`\n## ${c.a.name} of ${c.b.name}\n${site.siteUrl}/vergelijk/${c.slug}/\n${comparisonSummary(c)}`);
   return { short, full: full.join('\n') + '\n' };
 }
 

@@ -44,7 +44,7 @@ deploy/                   voorbeeld Caddyfile
 
 ## Pagina's
 
-Start; `/alternatief-voor/` en `/alternatief-voor/<product>/` ("Europees alternatief voor Slack"); `/alternatieven/<product>/`; `/categorie/<soort>/`; `/sector/<sector>/` (alleen met genoeg producten); `/hoe-we-beoordelen/`; `/over/`; `/bronnen/`; `/sponsor/`; `/dien-in/`; `/privacy/`. Verder `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt` en `zoek.json`.
+Start; `/alternatief-voor/` en `/alternatief-voor/<product>/` ("Europees alternatief voor Slack"); `/alternatieven/<product>/`; `/categorie/<soort>/`; `/vergelijk/<a>-vs-<b>/` ("A of B", alleen beoordeelde producten); `/sector/<sector>/` (alleen met genoeg producten); `/hoe-we-beoordelen/`; `/over/`; `/bronnen/`; `/sponsor/`; `/dien-in/`; `/privacy/`. Verder `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt` en `zoek.json`.
 
 ## Wat publiek is
 

@@ -23,15 +23,16 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 9. **Kandidaten blijven `noindex` tot ze getoetst zijn.** Een product wordt vanzelf indexeerbaar zodra de Filter het goedkeurt of Rik een oordeel zet.
 10. **Hosting start op Hostinger webhosting** (dist/ uploaden, zoals newground.nl), niet op de VPS van de scan. Simple Analytics laadt daarom vooralsnog van Simple Analytics zelf.
 11. **AI-zoekers en assistenten mogen alles lezen en citeren** (robots.txt staat het toe, `llms.txt` helpt). Bronvermelding voor CC BY-SA-gegevens blijft verplicht.
-12. **Volgende uitbreidingen, in deze volgorde:** vergelijkpagina's ("Nextcloud of ownCloud"), use-case pagina's ("Slack vervangen voor een stichting") en een pagina "Gewijzigd deze maand". Nieuwsbrief via Brevo: nog niet gekozen.
+12. **Volgende uitbreidingen, in deze volgorde:** vergelijkpagina's (gedaan, zie hieronder), use-case pagina's ("Slack vervangen voor een stichting") en een pagina "Gewijzigd deze maand". Nieuwsbrief via Brevo: nog niet gekozen.
 
 ## Wat er staat
 
-- 222 producten (32 beoordeeld, 190 nog niet), 119 doelen waarvan 74 met een eigen pagina, 24 categorieen, 1 sectorpagina (Overheid). Tellingen staan in `dist/build.json` na een bouw.
+- 222 producten (32 beoordeeld, 190 nog niet), 119 doelen waarvan 74 met een eigen pagina, 24 categorieen, 1 sectorpagina (Overheid) en 88 vergelijkpagina's (19 indexeerbaar). Tellingen staan in `dist/build.json` na een bouw.
+- **Vergelijkpagina's** (`/vergelijk/a-vs-b/`, "A of B"): alleen producten die Newground allebei heeft beoordeeld, in dezelfde categorie, die minstens één hetzelfde product vervangen, en waarvan beide een tekst van Newground hebben. Alles komt uit de data (oordeel, land, open source, levering, overheidsreferenties, eigen beoordelingstekst); er is niets verzonnen. Alleen paren waarbij beide Advies of Onder voorwaarden hebben zijn indexeerbaar en staan in de sitemap; een paar met een product op Volgen is zichtbaar maar `noindex`. Vindbaar via de footer, de startpagina, productpagina's, doelpagina's, `/vergelijk/` en `llms.txt`. Logica: `buildComparisons` in `scripts/lib/model.mjs`, pagina in `scripts/lib/pages.mjs`.
 - Per pagina: een "Kort antwoord" bovenaan, gestructureerde data (BreadcrumbList, FAQPage op de startpagina en doelpagina's, CollectionPage met ItemList), canonical, Open Graph, sitemap, `robots.txt` die AI-crawlers expliciet toestaat, `llms.txt` en `llms-full.txt`.
 - Filters (open source, Nederlands, overheid, mkb) en zoeken met een tikfout werken in de browser; zonder JavaScript blijft alles bruikbaar als gewone links.
 - CSP per pagina: alleen eigen server plus Simple Analytics. Geen inline scripts of styles, geen externe lettertypen.
-- Tests: `npm test` (19 tests: statusregels, parser, bouw, sponsorvakken, analytics, GEO, en dat de rangschikking overeenkomt met die van de scan). `npm run check` controleert de gebouwde site (0 fouten).
+- Tests: `npm test` (24 tests: statusregels, parser, bouw, sponsorvakken, analytics, GEO, en dat de rangschikking overeenkomt met die van de scan). `npm run check` controleert de gebouwde site (0 fouten).
 
 ## Wat Rik nog moet doen
 
@@ -64,7 +65,7 @@ Gebruik dezelfde lijst als de scan, zodat er één lijst is om bij te houden. Ni
 
 - Open Graph-afbeelding (nu alleen tekst), PNG-favicon.
 - **Eerstvolgend (besluit Rik, 22 oktober):**
-  - Vergelijkpagina's: genereren uit de lijst voor producten die hetzelfde doel vervangen. Alleen feiten uit de data; geen verzonnen vergelijking.
+  - ~~Vergelijkpagina's~~: gebouwd (zie "Wat er staat"). Wordt automatisch groter naarmate de Filter meer producten beoordeelt; vergelijkingen met een product zonder oordeel bestaan bewust niet. Om de vergelijking te verrijken: *Verdict reason NL* in Baserow vullen (nu bij 8 paren hebben beide kanten een Nederlandse beoordeling, bij 81 minstens een korte beschrijving).
   - Use-case pagina's: vragen redactie van Rik of Newground (we verzinnen geen praktijkverhalen); een sjabloon met verwijzing naar de scan en een klankbordgesprek kan wel vooraf.
   - Gewijzigd deze maand: vraagt dat de bouw het vorige `verdicts.json` bewaart om verschillen te zien (bijvoorbeeld `data/snapshots/` of een artifact van de vorige bouw). Eerst ontwerpen.
 - Nieuwsbrief via Brevo (Frans) met nieuwe alternatieven en eigendomsalarmen: nog geen besluit.

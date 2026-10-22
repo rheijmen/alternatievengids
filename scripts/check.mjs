@@ -64,6 +64,10 @@ export async function checkDir(dir, site) {
       // unrated pages must be noindex unless they were approved by the filter
       if (!/Goedgekeurd/.test(html)) err('niet-beoordeeld product is indexeerbaar');
     }
+    if (where.startsWith('/vergelijk/') && where !== '/vergelijk/index.html') {
+      if (!/<table class="compare">/.test(html)) err('vergelijking zonder tabel');
+      if ((html.match(/href="\/alternatieven\/[^"]+\/"/g) || []).length < 2) err('vergelijking linkt niet naar beide producten');
+    }
     if (/sponsor-banner/.test(html) && !/rel="sponsored noopener"/.test(html)) err('sponsorbanner zonder rel="sponsored"');
     if (where !== '/404.html' && !/class="slots"/.test(html)) err('geen sponsorvakken in de voet');
     if (where !== '/404.html' && (html.match(/class="slot slot-/g) || []).length !== 3) err('verwacht precies 3 sponsorvakken');
