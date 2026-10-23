@@ -130,7 +130,7 @@ function productPage(ctx, p) {
   ].filter(Boolean);
 
   const body = `${bc.html}
-<article class="product">
+<article class="product" data-basis="${p.basis}">
   <header class="page-head">
     <p class="kicker">${esc(CATEGORY_LABEL[p.category])}</p>
     <h1>${esc(p.name)}</h1>

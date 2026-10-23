@@ -43,6 +43,19 @@ test('niet-beoordeelde producten zijn zichtbaar gelabeld en noindex', { skip }, 
   assert.ok(!sitemap.includes(`/alternatieven/${unrated.slug}/`));
 });
 
+test('door het Filter goedgekeurde producten zijn indexeerbaar maar blijven als niet beoordeeld gelabeld', { skip }, async (t) => {
+  const approved = result.ctx.model.products.filter(p => p.stage === 'unrated' && p.basis === 'filter');
+  if (!approved.length) return t.skip('geen door het Filter goedgekeurde producten in de huidige data');
+  const sitemap = await fs.readFile(path.join(out, 'sitemap.xml'), 'utf8');
+  for (const p of approved) {
+    const html = await fs.readFile(path.join(out, 'alternatieven', p.slug, 'index.html'), 'utf8');
+    assert.match(html, /Nog niet beoordeeld/, p.slug);
+    assert.match(html, /name="robots" content="index,follow/, p.slug);
+    assert.match(html, /<article class="product" data-basis="filter">/, p.slug);
+    assert.ok(sitemap.includes(`/alternatieven/${p.slug}/`), `${p.slug} in sitemap`);
+  }
+});
+
 test('sponsor: banner is gemarkeerd, drie lege vakken met voorgevulde mail', { skip }, async () => {
   const html = await fs.readFile(path.join(out, 'alternatief-voor', 'slack', 'index.html'), 'utf8');
   assert.match(html, /class="sponsor-tag">Sponsor</);
