@@ -4,6 +4,7 @@
 import { esc, dateNl } from './text.mjs';
 import { STAGE_LABEL } from './model.mjs';
 
+export const NEWTAB = '<span class="visually-hidden"> (opent in een nieuw tabblad)</span>';
 export const link = (href, text, attrs = '') => `<a href="${esc(href)}"${attrs ? ' ' + attrs : ''}>${text}</a>`;
 
 export function mailto(to, subject, body) {
@@ -72,8 +73,17 @@ export function sponsorSlots(ctx) {
 
 // ---- Submit form and modal -----------------------------------------------------------------------------------
 
+// One error line under every field that has rules. The page script fills them in Dutch; the browser's own messages
+// ("Please enter a URL") are switched off with novalidate and never shown.
+const err = (id, name) => `<span class="field-error" id="err-${id}-${name}" data-error-for="${name}" hidden></span>`;
+
 export function submitForm(ctx, { id }) {
-  return `<form class="submit-form" data-submit-form${ctx.site.submit?.endpoint ? ` data-endpoint="${esc(ctx.site.submit.endpoint)}"` : ''} data-mailto="${esc(ctx.site.submit.mailTo)}">
+  const mail = ctx.site.submit.mailTo;
+  const fallback = mailto(mail, 'Inzending alternatievengids', 'Hoi Rik,\n\nIk dien een alternatief in:\n\nProduct:\nWebsite:\nVervangt:\nToelichting:\n\nMijn naam:\n');
+  return `${id === 'page' ? `<noscript><p class="notice">Dit formulier heeft JavaScript nodig. Zonder kun je ons ook mailen: ${link(fallback, esc(mail))}.</p></noscript>` : ''}
+<form class="submit-form" data-submit-form novalidate hidden${ctx.site.submit?.endpoint ? ` data-endpoint="${esc(ctx.site.submit.endpoint)}"` : ''} data-mailto="${esc(mail)}">
+  <p class="form-intro">Velden met een <b>*</b> zijn verplicht.</p>
+  <div class="form-summary" role="alert" tabindex="-1" hidden></div>
   <fieldset class="field-group">
     <legend>Wie ben je?</legend>
     <label class="choice"><input type="radio" name="role" value="gebruiker" checked><span><strong>Gebruiker of fan</strong><small>Ik gebruik dit product en vind dat het erin hoort.</small></span></label>
@@ -82,8 +92,8 @@ export function submitForm(ctx, { id }) {
   </fieldset>
 
   <div class="field-grid">
-    <label class="field"><span>Naam van het product <b>*</b></span><input type="text" name="product" required maxlength="120" autocomplete="off"></label>
-    <label class="field"><span>Website <b>*</b></span><input type="url" name="website" required maxlength="200" placeholder="https://" autocomplete="url"></label>
+    <label class="field"><span>Naam van het product <b>*</b></span><input type="text" name="product" maxlength="120" autocomplete="off" autocapitalize="sentences">${err(id, 'product')}</label>
+    <label class="field"><span>Website <b>*</b></span><input type="text" name="website" maxlength="200" inputmode="url" autocomplete="url" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="voorbeeld.nl" aria-describedby="hint-${id}-website"><small class="field-hint" id="hint-${id}-website">https:// hoef je niet te typen.</small>${err(id, 'website')}</label>
     <label class="field"><span>Welk Amerikaans product vervangt het?</span><input type="text" name="replaces" maxlength="160" placeholder="Bijvoorbeeld Slack of Google Analytics"></label>
     <label class="field"><span>In welk land zit het bedrijf?</span><input type="text" name="country" maxlength="80" autocomplete="country-name"></label>
     <label class="field"><span>Is het open source?</span>
@@ -92,19 +102,19 @@ export function submitForm(ctx, { id }) {
   <label class="field"><span>Waarom hoort het erin? Wat wil je ons vertellen?</span><textarea name="why" rows="4" maxlength="2000" placeholder="Wat doet het, voor wie, waar draait het, waarom is het een goed alternatief?"></textarea></label>
 
   <div class="field-grid">
-    <label class="field"><span>Jouw naam <b>*</b></span><input type="text" name="name" required maxlength="120" autocomplete="name"></label>
-    <label class="field"><span>Jouw e-mailadres <b>*</b></span><input type="email" name="email" required maxlength="160" autocomplete="email"></label>
+    <label class="field"><span>Jouw naam <b>*</b></span><input type="text" name="name" maxlength="120" autocomplete="name">${err(id, 'name')}</label>
+    <label class="field"><span>Jouw e-mailadres <b>*</b></span><input type="text" name="email" maxlength="160" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="naam@voorbeeld.nl">${err(id, 'email')}</label>
   </div>
-  <label class="check" data-updates><input type="checkbox" name="updates"><span data-updates-text>Je mag me mailen met vragen over deze inzending.</span></label>
-  <label class="check"><input type="checkbox" name="consent" required><span>Ik ga ermee akkoord dat Newground mijn gegevens gebruikt om deze inzending te beoordelen en mij daarover te mailen. Lees de ${link('/privacy/', 'privacyverklaring')}. <b>*</b></span></label>
+  <div class="check-block"><label class="check" data-updates><input type="checkbox" name="updates"><span data-updates-text>Je mag me mailen met vragen over deze inzending.</span></label>${err(id, 'updates')}</div>
+  <div class="check-block"><label class="check"><input type="checkbox" name="consent"><span>Ik ga ermee akkoord dat Newground mijn gegevens gebruikt om deze inzending te beoordelen en mij daarover te mailen. Lees de ${link('/privacy/', 'privacyverklaring (opent in een nieuw tabblad)', 'target="_blank" rel="noopener"')}. <b>*</b></span></label>${err(id, 'consent')}</div>
   <label class="trap" aria-hidden="true">Laat dit leeg<input type="text" name="trap" tabindex="-1" autocomplete="off"></label>
 
   <p class="form-error" role="alert" hidden></p>
   <div class="form-actions">
     <button class="btn btn-primary" type="submit">Verstuur inzending</button>
-    <span class="hint">Alles met een * is nodig. Een inzending komt in de lijst als kandidaat; daarna toetst Newground hem.</span>
+    <span class="hint">Een inzending komt in de lijst als kandidaat; daarna toetst Newground hem.</span>
   </div>
-  <p class="form-done" role="status" hidden></p>
+  <p class="form-done" role="status" tabindex="-1" hidden></p>
 </form>`;
 }
 
@@ -128,9 +138,9 @@ function header(ctx, path) {
   return `<a class="skip" href="#inhoud">Direct naar inhoud</a>
 <header class="topbar">
   <div class="wrap bar">
-    <a class="brand" href="/" aria-label="${esc(ctx.site.name)}, naar de startpagina">
+    <a class="brand" href="/" aria-label="${esc(ctx.site.name)} (beta), naar de startpagina">
       <img class="brand-das ng-img" src="/assets/das.svg" alt="" width="46" height="49">
-      <span class="brand-text"><span class="brand-name">${esc(ctx.site.name)}</span><span class="brand-by">een initiatief van Newground</span></span>
+      <span class="brand-text"><span class="brand-name">${esc(ctx.site.name)}<span class="beta">beta</span></span><span class="brand-by">een initiatief van Newground</span></span>
     </a>
     <nav class="main-nav" aria-label="Hoofdnavigatie">${nav}</nav>
     <div class="bar-actions">
@@ -150,7 +160,7 @@ function footer(ctx) {
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-top">
-      <a class="brand" href="/"><img class="brand-das ng-img" src="/assets/das.svg" alt="" width="46" height="49"><span class="brand-text"><span class="brand-name">${esc(ctx.site.name)}</span><span class="brand-by">een initiatief van Newground</span></span></a>
+      <a class="brand" href="/"><img class="brand-das ng-img" src="/assets/das.svg" alt="" width="46" height="49"><span class="brand-text"><span class="brand-name">${esc(ctx.site.name)}<span class="beta">beta</span></span><span class="brand-by">een initiatief van Newground</span></span></a>
       <p class="footer-line">Europese grond<br>onder je data &amp; AI.</p>
     </div>
     <div class="footer-cols">
@@ -197,6 +207,7 @@ export function layout(ctx, { path, title, description, body, jsonld = [], robot
 <meta name="twitter:card" content="summary">
 ${modified ? `<meta property="article:modified_time" content="${esc(modified)}">` : ''}
 ${analyticsHead(ctx)}
+<script src="/js/form-rules.js?v=${ctx.assets.rules}" defer></script>
 <script src="/js/gids.js?v=${ctx.assets.js}" defer></script>
 ${ld}
 </head>

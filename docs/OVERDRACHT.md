@@ -34,6 +34,13 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 - CSP per pagina: alleen eigen server plus Simple Analytics. Geen inline scripts of styles, geen externe lettertypen.
 - Tests: `npm test` (24 tests: statusregels, parser, bouw, sponsorvakken, analytics, GEO, en dat de rangschikking overeenkomt met die van de scan). `npm run check` controleert de gebouwde site (0 fouten).
 
+## Bruikbaarheid en beta (22 oktober)
+
+- **Beta-label** naast de naam in kop en voet (`<span class="beta">`), met uitleg onder "Waarom beta" op /over/. Weghalen: de twee plekken in `render.mjs` en die sectie.
+- **Formulieren** volgen de regel in CLAUDE.md: eigen Nederlandse meldingen, nooit die van de browser, "voorbeeld.nl" is goed. Regels staan in `static/js/form-rules.js` (getest in `tests/forms.test.mjs`); de check keurt `type=url|email|...` en `required` af.
+- Zoeken toont "Niets gevonden" met een route naar indienen; externe links melden "(opent in een nieuw tabblad)"; knoppen en chips minimaal 44 px; velden 16 px (geen inzoomen op iPhone).
+- **De scan (sovereignos) volgt deze regel nog niet:** `js/app.js:413` (`reportValidity()` op e-mail), `type="email"` in `js/views/reports.js`, `intake.js`, `js/feedback.js`, en `required` in `js/views/review.js`, `own.js`, `scan.js`. Aan te passen in een sessie op de scan-repo.
+
 ## Wat Rik nog moet doen
 
 1. **Draft-PR bekijken** en laten weten wat anders moet (zie de vragen onderaan het gesprek).

@@ -83,7 +83,8 @@ export async function build({ outDir = path.join(ROOT, 'dist'), scanOptions = {}
 
   const cssBuf = await fs.readFile(path.join(ROOT, 'static/css/gids.css'));
   const jsBuf = await fs.readFile(path.join(ROOT, 'static/js/gids.js'));
-  const ctx = { site, scan, model, assets: { css: sha10(cssBuf), js: sha10(jsBuf) } };
+  const rulesBuf = await fs.readFile(path.join(ROOT, 'static/js/form-rules.js'));
+  const ctx = { site, scan, model, assets: { css: sha10(cssBuf), js: sha10(jsBuf), rules: sha10(rulesBuf) } };
 
   await fs.rm(outDir, { recursive: true, force: true });
   await copyDir(path.join(ROOT, 'static'), outDir);

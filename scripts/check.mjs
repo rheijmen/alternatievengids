@@ -56,6 +56,11 @@ export async function checkDir(dir, site) {
       if (p && !pageFor(p)) err(`kapotte link: ${u}`);
     }
     if (/<[^>]+\sstyle="/.test(html)) err('inline style-attribuut (CSP staat dat niet toe)');
+    // Newground rule: never the browser's own validation (English messages, "Please enter a URL"). Fields are plain
+    // text fields with inputmode; the page script validates and speaks Dutch.
+    if (/<input[^>]*\stype="(url|email|number|tel|date)"/.test(html)) err('veld met type url, email, number, tel of date: de browser toont dan eigen (Engelse) meldingen');
+    if (/<(input|select|textarea)[^>]*\srequired[\s>=]/.test(html)) err('required-attribuut: gebruik eigen Nederlandse meldingen');
+    if (/<form[^>]*data-submit-form(?![^>]*novalidate)/.test(html)) err('formulier zonder novalidate');
     if (/<script(?![^>]*\b(src|type)=)[^>]*>/.test(html)) err('inline script (CSP staat dat niet toe)');
     const text = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
     if (/[—–]/.test(text)) err('gedachtestreep of halve streep in tekst');

@@ -58,11 +58,35 @@ test('analytics: Simple Analytics met noscript-pixel, en CSP die precies dat toe
   assert.match(html, /script-src &#39;self&#39; https:\/\/scripts\.simpleanalyticscdn\.com/);
 });
 
-test('modal met drie rollen en verplichte toestemming', { skip }, async () => {
+test('modal met drie rollen en toestemmingsvakje', { skip }, async () => {
   const html = await fs.readFile(path.join(out, 'index.html'), 'utf8');
   for (const r of ['gebruiker', 'producent', 'leverancier']) assert.match(html, new RegExp(`name="role" value="${r}"`));
-  assert.match(html, /name="consent" required/);
+  assert.match(html, /name="consent"/);
   assert.match(html, /name="trap"/);
+});
+
+test('formulieren: nooit de meldingen van de browser, altijd eigen Nederlandse meldingen', { skip }, async () => {
+  for (const file of ['index.html', 'dien-in/index.html']) {
+    const html = await fs.readFile(path.join(out, file), 'utf8');
+    const form = html.match(/<form class="submit-form"[^>]*>[\s\S]*?<\/form>/)[0];
+    assert.match(form, /\bnovalidate\b/, `${file}: novalidate`);
+    assert.doesNotMatch(form, /\brequired\b/, `${file}: geen required`);
+    assert.doesNotMatch(form, /type="(url|email|number|tel|date)"/, `${file}: geen speciale invoertypes`);
+    assert.match(form, /name="website"[^>]*inputmode="url"/);
+    assert.match(form, /name="email"[^>]*inputmode="email"/);
+    for (const n of ['product', 'website', 'name', 'email', 'consent']) assert.match(form, new RegExp(`data-error-for="${n}"`), `${file}: foutplek ${n}`);
+    assert.match(form, /role="alert"/);
+    assert.ok(html.indexOf('/js/form-rules.js') > 0 && html.indexOf('/js/form-rules.js') < html.indexOf('/js/gids.js'), 'regels laden voor gids.js');
+  }
+  const page = await fs.readFile(path.join(out, 'dien-in/index.html'), 'utf8');
+  assert.match(page, /<form[^>]*\bhidden\b/, 'formulier verborgen tot JavaScript het toont');
+  assert.match(page, /<noscript>[\s\S]*mailto:/, 'zonder JavaScript: mail-terugval');
+});
+
+test('beta-label in kop en voet, en melding bij niets gevonden', { skip }, async () => {
+  const html = await fs.readFile(path.join(out, 'index.html'), 'utf8');
+  assert.equal((html.match(/<span class="beta">beta<\/span>/g) || []).length, 2);
+  assert.match(html, /class="search-empty"[^>]*role="status"[^>]*hidden/);
 });
 
 test('GEO: kort antwoord, FAQ-schema, llms.txt en AI-crawlers toegestaan', { skip }, async () => {
