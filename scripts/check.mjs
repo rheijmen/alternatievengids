@@ -65,9 +65,9 @@ export async function checkDir(dir, site) {
     const text = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
     if (/[—–]/.test(text)) err('gedachtestreep of halve streep in tekst');
     if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(text.replace(/[→↗×−…·]/g, ''))) err('emoji in tekst');
-    if (where.startsWith('/alternatieven/') && where !== '/alternatieven/index.html' && /badge-unrated/.test(html) && !site.indexUnrated && !/noindex/.test(robots) && !/badge-review|filter/.test(html)) {
-      // unrated pages must be noindex unless they were approved by the filter
-      if (!/Goedgekeurd/.test(html)) err('niet-beoordeeld product is indexeerbaar');
+    if (where.startsWith('/alternatieven/') && where !== '/alternatieven/index.html' && /badge-unrated/.test(html) && !site.indexUnrated && !/noindex/.test(robots)) {
+      // unrated pages must be noindex unless the Filter approved them (decision 9 in OVERDRACHT.md)
+      if (!/<article class="product" data-basis="filter">/.test(html)) err('niet-beoordeeld product is indexeerbaar');
     }
     if (where.startsWith('/vergelijk/') && where !== '/vergelijk/index.html') {
       if (!/<table class="compare">/.test(html)) err('vergelijking zonder tabel');
