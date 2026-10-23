@@ -16,6 +16,11 @@
     return (a[i] === b[i + 1] && a[i + 1] === b[i] && a.slice(i + 2) === b.slice(i + 2)) || a.slice(i + 1) === b.slice(i + 1) || a.slice(i) === b.slice(i + 1) || a.slice(i + 1) === b.slice(i);
   };
 
+  // ---- Tooltips: Escape closes the one that is open (WCAG 1.4.13) -----------------------------------------
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.activeElement?.classList.contains('has-tip')) document.activeElement.blur();
+  });
+
   // ---- Search -------------------------------------------------------------------------------------------
   const form = $('[data-search]');
   if (form) {

@@ -38,6 +38,7 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 
 - **Beta-label** naast de naam in kop en voet (`<span class="beta">`), met uitleg onder "Waarom beta" op /over/. Weghalen: de twee plekken in `render.mjs` en die sectie.
 - **Formulieren** volgen de regel in CLAUDE.md: eigen Nederlandse meldingen, nooit die van de browser, "voorbeeld.nl" is goed. Regels staan in `static/js/form-rules.js` (getest in `tests/forms.test.mjs`); de check keurt `type=url|email|...` en `required` af.
+- "Eigendom verandert" heeft in lijsten een uitleg (hover, toetsenbord, tik; Escape sluit). Puur CSS met één regel JavaScript voor Escape; de tekst staat in de pagina, dus schermlezers lezen hem mee.
 - Zoeken toont "Niets gevonden" met een route naar indienen; externe links melden "(opent in een nieuw tabblad)"; knoppen en chips minimaal 44 px; velden 16 px (geen inzoomen op iPhone).
 - **De scan (sovereignos) volgt deze regel nog niet:** `js/app.js:413` (`reportValidity()` op e-mail), `type="email"` in `js/views/reports.js`, `intake.js`, `js/feedback.js`, en `required` in `js/views/review.js`, `own.js`, `scan.js`. Aan te passen in een sessie op de scan-repo.
 
