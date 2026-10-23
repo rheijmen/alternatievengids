@@ -56,6 +56,24 @@ test('door het Filter goedgekeurde producten zijn indexeerbaar maar blijven als 
   }
 });
 
+test('Eigendom verandert heeft in lijsten een uitleg die ook met toetsenbord en schermlezer werkt', { skip }, async (t) => {
+  if (!result.ctx.model.products.some(x => x.review && x.index)) return t.skip('geen product met eigendomsalarm in de huidige data');
+  const files = [];
+  for (const dir of ['alternatieven', 'categorie', 'sector']) {
+    const base = path.join(out, dir);
+    for (const d of await fs.readdir(base).catch(() => [])) files.push(path.join(base, d, 'index.html'));
+  }
+  let found = 0;
+  for (const f of files) {
+    const html = await fs.readFile(f, 'utf8').catch(() => '');
+    for (const m of html.matchAll(/<span class="badge badge-review has-tip" tabindex="0">Eigendom verandert<span class="tip">([^<]+)<\/span><\/span>/g)) {
+      found++;
+      assert.match(m[1], /overname of nieuwe eigenaar/);
+    }
+  }
+  assert.ok(found > 0, 'tooltip komt voor in minstens een lijst');
+});
+
 test('sponsor: banner is gemarkeerd, drie lege vakken met voorgevulde mail', { skip }, async () => {
   const html = await fs.readFile(path.join(out, 'alternatief-voor', 'slack', 'index.html'), 'utf8');
   assert.match(html, /class="sponsor-tag">Sponsor</);

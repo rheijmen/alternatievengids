@@ -4,6 +4,8 @@ import { esc, lead, fit, nl, dateNl, isoDay } from './text.mjs';
 import { STAGES, STAGE_LABEL, CATEGORY_LABEL, targetHasPage, shortName } from './model.mjs';
 import { layout, link, badge, mailto, sponsorBanner, submitForm, scanCta, faqHtml, faqLd, breadcrumbs, organizationLd, meter, NEWTAB } from './render.mjs';
 
+const OWNERSHIP_TIP = 'Er is nieuws over een overname of nieuwe eigenaar. Newground bekijkt dit oordeel opnieuw. Tot die tijd kan het oordeel achterhaald zijn.';
+
 const OPEN = { yes: 'Ja', core: 'Gedeeltelijk (open core)', no: 'Nee' };
 const DELIVERY = { managed: 'Beheerd door een host', 'self-hosted': 'Zelf te hosten', saas: 'Als dienst (SaaS)' };
 const lc = s => s.charAt(0).toLowerCase() + s.slice(1);
@@ -43,7 +45,7 @@ function item(p) {
     ${metaText(p) ? `<p class="item-meta">${metaText(p)}</p>` : ''}
     <p class="item-text">${esc(lead(itemText(p), 200))}</p>
   </div>
-  <div class="item-side">${badge(p.stage)}${p.review ? '<span class="badge badge-review">Eigendom verandert</span>' : ''}${p.publicOnly ? '<span class="badge badge-gov">Alleen voor overheid</span>' : ''}${c.length ? `<ul class="chips">${c.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}</div>
+  <div class="item-side">${badge(p.stage)}${p.review ? `<span class="badge badge-review has-tip" tabindex="0">Eigendom verandert<span class="tip">${OWNERSHIP_TIP}</span></span>` : ''}${p.publicOnly ? '<span class="badge badge-gov">Alleen voor overheid</span>' : ''}${c.length ? `<ul class="chips">${c.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}</div>
 </li>`;
 }
 
