@@ -1,0 +1,21 @@
+{
+  "built": "2026-10-24T11:20:31.071Z",
+  "dataGenerated": "2026-10-24T06:40:02+02:00",
+  "scanSource": "https://scan.newground.nl",
+  "scanRelease": {
+    "version": "0.8.0",
+    "date": "2026-10-22"
+  },
+  "pages": 429,
+  "stats": {
+    "products": 216,
+    "rated": 45,
+    "advise": 8,
+    "conditional": 23,
+    "watch": 14,
+    "unrated": 171,
+    "targets": 113,
+    "goal": 1000,
+    "rowsTotal": 240
+  }
+}

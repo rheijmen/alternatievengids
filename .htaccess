@@ -1,0 +1,27 @@
+# Voor Apache/LiteSpeed-hosting (zoals Hostinger shared hosting). Op een eigen server met Caddy: zie deploy/Caddyfile.example.
+Options -Indexes
+ErrorDocument 404 /404.html
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "DENY"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  # css, js en lettertypen krijgen een versie (?v=hash) in de pagina: veilig lang te bewaren.
+  <FilesMatch "\.(css|js|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|json|txt|xml)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+RewriteEngine On
+
+# www naar het hoofdadres (een adres per pagina, goed voor Google). HTTPS dwing je af in hPanel (Beveiliging, SSL).
+RewriteCond %{HTTP_HOST} ^www\.alternatievengids\.nl$ [NC]
+RewriteRule ^ https://alternatievengids.nl%{REQUEST_URI} [L,R=301]
+
+# Een pagina zonder slash naar de map met slash, zoals in de sitemap.
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*[^/])$ /$1/ [R=301,L]
