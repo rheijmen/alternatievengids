@@ -25,6 +25,21 @@ Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkaf
 11. **AI-zoekers en assistenten mogen alles lezen en citeren** (robots.txt staat het toe, `llms.txt` helpt). Bronvermelding voor CC BY-SA-gegevens blijft verplicht.
 12. **Volgende uitbreidingen, in deze volgorde:** vergelijkpagina's (gedaan, zie hieronder), use-case pagina's ("Slack vervangen voor een stichting") en een pagina "Gewijzigd deze maand". Nieuwsbrief via Brevo: nog niet gekozen.
 
+## Wat hoort waar (besluit Rik, 26 oktober)
+
+De route is: **Alternatievengids, dan de scan, dan follow-up en lead** (onder andere de discovery). Elk onderwerp hoort op precies een plek.
+
+| Stap | Doel | Wat erbij hoort |
+|---|---|---|
+| Alternatievengids (deze repo) | Vindbaar worden en vertrouwen winnen | Oordeel per product, vergelijkpagina's, use-case pagina's, bronnen. Verwijst naar de scan en naar het gesprek, niet verder. |
+| Scan (repo `sovereignos`) | Het persoonlijke beeld van de bezoeker | De vragenlijst en het resultaat, de beheerpagina, de formulierregel en de fixes daarvoor. Aan het eind van een resultaat staat de uitnodiging voor een discovery. |
+| Follow-up en lead | Meten wat mensen echt doen | De discovery: aanpak, privacy by design, gereedschap en het Sovereign Discovery Report. Staat in een Google Doc in Riks Drive ("Sovereign Discovery: aanpak en privacy by design"), niet in een repo. |
+
+Regels die hieruit volgen:
+- Gaat tekst over het meten van mensen, gereedschap voor discovery of de inhoud van het rapport, dan hoort die in het discovery-document. De Gids mag er een alinea over hebben en verwijst door.
+- Een use-case pagina in de Gids is praktisch: alternatieven per functie uit de data, jouw advies, een kader met de visie. Geen methode, geen privacyontwerp.
+- De uitbreiding van de beheerpagina (alles zien, opnieuw beoordelen, status wijzigen) is een opdracht voor de scan-sessie. Die opdracht staat niet in deze repo, omdat deze repo openbaar is.
+
 ## Wat er staat
 
 - 222 producten (32 beoordeeld, 190 nog niet), 119 doelen waarvan 74 met een eigen pagina, 24 categorieen, 1 sectorpagina (Overheid) en 88 vergelijkpagina's (19 indexeerbaar). Tellingen staan in `dist/build.json` na een bouw.
@@ -74,7 +89,7 @@ Gebruik dezelfde lijst als de scan, zodat er één lijst is om bij te houden. Ni
 - Open Graph-afbeelding (nu alleen tekst), PNG-favicon.
 - **Eerstvolgend (besluit Rik, 22 oktober):**
   - ~~Vergelijkpagina's~~: gebouwd (zie "Wat er staat"). Wordt automatisch groter naarmate de Filter meer producten beoordeelt; vergelijkingen met een product zonder oordeel bestaan bewust niet. Om de vergelijking te verrijken: *Verdict reason NL* in Baserow vullen (nu bij 8 paren hebben beide kanten een Nederlandse beoordeling, bij 81 minstens een korte beschrijving).
-  - Use-case pagina's: vragen redactie van Rik of Newground (we verzinnen geen praktijkverhalen); een sjabloon met verwijzing naar de scan en een klankbordgesprek kan wel vooraf.
+  - Use-case pagina's: vragen redactie van Rik of Newground (we verzinnen geen praktijkverhalen). Eerste: Microsoft 365 vervangen, als praktische gids met een kader "Meer dan een migratie" (Newground ziet dat een AI-assistent over mail, documenten, chat en systemen heen de plek wordt waar werk begint en eindigt) dat doorverwijst naar het visieartikel van Newground. Wacht op de link en titel van dat artikel en op het antwoord of de discovery al te boeken is. Daarna Google Workspace en ChatGPT.
   - Gewijzigd deze maand: vraagt dat de bouw het vorige `verdicts.json` bewaart om verschillen te zien (bijvoorbeeld `data/snapshots/` of een artifact van de vorige bouw). Eerst ontwerpen.
 - Nieuwsbrief via Brevo (Frans) met nieuwe alternatieven en eigendomsalarmen: nog geen besluit.
 - Koppeling scan: "Gebruik je X?" opent de scan nu op de startpagina. De scan heeft geen route om een product voor te selecteren; als die er komt, kan elke Gids-pagina de scan met dat product starten.
