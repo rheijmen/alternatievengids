@@ -1,0 +1,119 @@
+# Alternatievengids
+
+> Nederlandse gids met Europese en open-source alternatieven voor Amerikaanse software. Per product dat je wilt vervangen staan de alternatieven met bron, datum en het oordeel van Newground. Een initiatief van Newground (Vespertied B.V.), Amsterdam. Taal: Nederlands. Bijgewerkt op 2026-10-31.
+
+Hoe de gids is opgebouwd:
+- Elke pagina "Europees alternatief voor X" begint met een kort antwoord.
+- Oordelen: Advies, Onder voorwaarden, Volgen of Nog niet beoordeeld. Alleen Newground geeft een oordeel; zie de pagina Hoe we beoordelen.
+- Producten zonder oordeel zijn gevonden in openbare bronnen en niet gecontroleerd. Citeer die niet als aanbeveling.
+- Sponsorplekken zijn gemarkeerd als Sponsor en beïnvloeden het oordeel niet.
+
+## Belangrijkste pagina's
+- [Hoe we beoordelen](https://alternatievengids.nl/hoe-we-beoordelen/): de vier eisen en wat de oordelen betekenen
+- [Alle producten](https://alternatievengids.nl/alternatieven/)
+- [Bronnen en voortgang](https://alternatievengids.nl/bronnen/)
+
+## Europees alternatief voor...
+- [Europees alternatief voor Microsoft 365](https://alternatievengids.nl/alternatief-voor/microsoft-365/): 23 alternatieven, 12 beoordeeld
+- [Europees alternatief voor ChatGPT](https://alternatievengids.nl/alternatief-voor/chatgpt/): 16 alternatieven, 10 beoordeeld
+- [Europees alternatief voor Google Workspace](https://alternatievengids.nl/alternatief-voor/google-workspace/): 20 alternatieven, 9 beoordeeld
+- [Europees alternatief voor Amazon Web Services](https://alternatievengids.nl/alternatief-voor/amazon-web-services/): 16 alternatieven, 6 beoordeeld
+- [Europees alternatief voor Microsoft Azure](https://alternatievengids.nl/alternatief-voor/microsoft-azure/): 16 alternatieven, 6 beoordeeld
+- [Europees alternatief voor Google Cloud](https://alternatievengids.nl/alternatief-voor/google-cloud/): 14 alternatieven, 6 beoordeeld
+- [Europees alternatief voor Microsoft Copilot](https://alternatievengids.nl/alternatief-voor/microsoft-copilot/): 11 alternatieven, 6 beoordeeld
+- [Europees alternatief voor Microsoft Teams](https://alternatievengids.nl/alternatief-voor/microsoft-teams/): 13 alternatieven, 5 beoordeeld
+- [Europees alternatief voor Google Drive](https://alternatievengids.nl/alternatief-voor/google-drive/): 17 alternatieven, 4 beoordeeld
+- [Europees alternatief voor OneDrive/SharePoint](https://alternatievengids.nl/alternatief-voor/onedrive-sharepoint/): 15 alternatieven, 4 beoordeeld
+- [Europees alternatief voor Dropbox](https://alternatievengids.nl/alternatief-voor/dropbox/): 13 alternatieven, 4 beoordeeld
+- [Europees alternatief voor Google Meet](https://alternatievengids.nl/alternatief-voor/google-meet/): 7 alternatieven, 4 beoordeeld
+- [Europees alternatief voor Zoom](https://alternatievengids.nl/alternatief-voor/zoom/): 5 alternatieven, 4 beoordeeld
+- [Europees alternatief voor Google Chat](https://alternatievengids.nl/alternatief-voor/google-chat/): 7 alternatieven, 3 beoordeeld
+- [Europees alternatief voor Exchange Server](https://alternatievengids.nl/alternatief-voor/exchange-server/): 6 alternatieven, 3 beoordeeld
+- [Europees alternatief voor Jira](https://alternatievengids.nl/alternatief-voor/jira/): 6 alternatieven, 2 beoordeeld
+- [Europees alternatief voor Asana](https://alternatievengids.nl/alternatief-voor/asana/): 6 alternatieven, 2 beoordeeld
+- [Europees alternatief voor Slack](https://alternatievengids.nl/alternatief-voor/slack/): 6 alternatieven, 2 beoordeeld
+- [Europees alternatief voor Okta](https://alternatievengids.nl/alternatief-voor/okta/): 3 alternatieven, 2 beoordeeld
+- [Europees alternatief voor Microsoft Entra ID](https://alternatievengids.nl/alternatief-voor/microsoft-entra-id/): 3 alternatieven, 2 beoordeeld
+- [Europees alternatief voor Trello](https://alternatievengids.nl/alternatief-voor/trello/): 3 alternatieven, 2 beoordeeld
+- [Europees alternatief voor Claude](https://alternatievengids.nl/alternatief-voor/claude/): 2 alternatieven, 2 beoordeeld
+- [Europees alternatief voor HubSpot](https://alternatievengids.nl/alternatief-voor/hubspot/): 7 alternatieven, 1 beoordeeld
+- [Europees alternatief voor SurveyMonkey](https://alternatievengids.nl/alternatief-voor/surveymonkey/): 6 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Salesforce](https://alternatievengids.nl/alternatief-voor/salesforce/): 6 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Google Analytics](https://alternatievengids.nl/alternatief-voor/google-analytics/): 6 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Microsoft Dynamics 365](https://alternatievengids.nl/alternatief-voor/microsoft-dynamics-365/): 5 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Pipedrive](https://alternatievengids.nl/alternatief-voor/pipedrive/): 5 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Oracle NetSuite](https://alternatievengids.nl/alternatief-voor/oracle-netsuite/): 4 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Snowflake](https://alternatievengids.nl/alternatief-voor/snowflake/): 3 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Databricks](https://alternatievengids.nl/alternatief-voor/databricks/): 3 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Zapier](https://alternatievengids.nl/alternatief-voor/zapier/): 3 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Calendly](https://alternatievengids.nl/alternatief-voor/calendly/): 3 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Doodle](https://alternatievengids.nl/alternatief-voor/doodle/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Google Cloud Identity](https://alternatievengids.nl/alternatief-voor/google-cloud-identity/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Notion](https://alternatievengids.nl/alternatief-voor/notion/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Confluence](https://alternatievengids.nl/alternatief-voor/confluence/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Otter.ai](https://alternatievengids.nl/alternatief-voor/otter-ai/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor monday.com](https://alternatievengids.nl/alternatief-voor/monday-com/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Zendesk](https://alternatievengids.nl/alternatief-voor/zendesk/): 2 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Microsoft Outlook](https://alternatievengids.nl/alternatief-voor/microsoft-outlook/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Windows 11](https://alternatievengids.nl/alternatief-voor/windows-11/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor macOS](https://alternatievengids.nl/alternatief-voor/macos/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Microsoft Fabric](https://alternatievengids.nl/alternatief-voor/microsoft-fabric/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Google BigQuery](https://alternatievengids.nl/alternatief-voor/google-bigquery/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor QuickBooks](https://alternatievengids.nl/alternatief-voor/quickbooks/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Xero](https://alternatievengids.nl/alternatief-voor/xero/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor SAP Business One](https://alternatievengids.nl/alternatief-voor/sap-business-one/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Exact Online](https://alternatievengids.nl/alternatief-voor/exact-online/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Google Docs](https://alternatievengids.nl/alternatief-voor/google-docs/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Fireflies.ai](https://alternatievengids.nl/alternatief-voor/fireflies-ai/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Fathom](https://alternatievengids.nl/alternatief-voor/fathom/): 1 alternatieven, 1 beoordeeld
+- [Europees alternatief voor Google Forms](https://alternatievengids.nl/alternatief-voor/google-forms/): 6 alternatieven, 0 beoordeeld
+- [Europees alternatief voor Microsoft Defender](https://alternatievengids.nl/alternatief-voor/microsoft-defender/): 5 alternatieven, 0 beoordeeld
+- [Europees alternatief voor Mailchimp](https://alternatievengids.nl/alternatief-voor/mailchimp/): 5 alternatieven, 0 beoordeeld
+- [Europees alternatief voor LastPass](https://alternatievengids.nl/alternatief-voor/lastpass/): 5 alternatieven, 0 beoordeeld
+- [Europees alternatief voor 1Password](https://alternatievengids.nl/alternatief-voor/1password/): 5 alternatieven, 0 beoordeeld
+- [Europees alternatief voor CrowdStrike Falcon](https://alternatievengids.nl/alternatief-voor/crowdstrike-falcon/): 4 alternatieven, 0 beoordeeld
+- [Europees alternatief voor Bitwarden](https://alternatievengids.nl/alternatief-voor/bitwarden/): 4 alternatieven, 0 beoordeeld
+- [Europees alternatief voor Google Translate](https://alternatievengids.nl/alternatief-voor/google-translate/): 3 alternatieven, 0 beoordeeld
+
+## Vergelijkingen
+- [Infomaniak kSuite (kDrive) of Nextcloud Hub](https://alternatievengids.nl/vergelijk/infomaniak-ksuite-vs-nextcloud-hub/)
+- [BigBlueButton of Jitsi Meet](https://alternatievengids.nl/vergelijk/bigbluebutton-vs-jitsi-meet/)
+- [Element (Matrix) of Nextcloud Talk](https://alternatievengids.nl/vergelijk/element-vs-nextcloud-talk/)
+- [Filen of Nextcloud Files](https://alternatievengids.nl/vergelijk/filen-vs-nextcloud-files/)
+- [Hetzner Cloud of OVHcloud](https://alternatievengids.nl/vergelijk/hetzner-cloud-vs-ovhcloud/)
+- [Hetzner Cloud of Scaleway](https://alternatievengids.nl/vergelijk/hetzner-cloud-vs-scaleway/)
+- [Hetzner Cloud of Solvinity](https://alternatievengids.nl/vergelijk/hetzner-cloud-vs-solvinity/)
+- [Langdock of Mistral Vibe (voorheen Le Chat)](https://alternatievengids.nl/vergelijk/langdock-vs-mistral-vibe/)
+- [mailbox.org of Open-Xchange App Suite](https://alternatievengids.nl/vergelijk/mailbox-org-vs-open-xchange-app-suite/)
+- [OpenProject of Taiga](https://alternatievengids.nl/vergelijk/openproject-vs-taiga/)
+- [OVHcloud of Scaleway](https://alternatievengids.nl/vergelijk/ovhcloud-vs-scaleway/)
+- [OVHcloud of Solvinity](https://alternatievengids.nl/vergelijk/ovhcloud-vs-solvinity/)
+- [Scaleway of Solvinity](https://alternatievengids.nl/vergelijk/scaleway-vs-solvinity/)
+- [AIAIAI of Aleph Alpha PhariaAI / Kolibri](https://alternatievengids.nl/vergelijk/aiaiai-vs-aleph-alpha-phariaai-kolibri/)
+- [AIAIAI of Langdock](https://alternatievengids.nl/vergelijk/aiaiai-vs-langdock/)
+- [AIAIAI of meinGPT](https://alternatievengids.nl/vergelijk/aiaiai-vs-meingpt/)
+- [AIAIAI of Mistral Vibe (voorheen Le Chat)](https://alternatievengids.nl/vergelijk/aiaiai-vs-mistral-vibe/)
+- [Aleph Alpha PhariaAI / Kolibri of Langdock](https://alternatievengids.nl/vergelijk/aleph-alpha-phariaai-kolibri-vs-langdock/)
+- [Aleph Alpha PhariaAI / Kolibri of meinGPT](https://alternatievengids.nl/vergelijk/aleph-alpha-phariaai-kolibri-vs-meingpt/)
+- [Aleph Alpha PhariaAI / Kolibri of Mistral Vibe (voorheen Le Chat)](https://alternatievengids.nl/vergelijk/aleph-alpha-phariaai-kolibri-vs-mistral-vibe/)
+- [Authentik of Keycloak](https://alternatievengids.nl/vergelijk/authentik-vs-keycloak/)
+- [Infomaniak kSuite (kDrive) of mailbox.org](https://alternatievengids.nl/vergelijk/infomaniak-ksuite-vs-mailbox-org/)
+- [Infomaniak kSuite (kDrive) of Open-Xchange App Suite](https://alternatievengids.nl/vergelijk/infomaniak-ksuite-vs-open-xchange-app-suite/)
+- [Langdock of meinGPT](https://alternatievengids.nl/vergelijk/langdock-vs-meingpt/)
+- [mailbox.org of Nextcloud Hub](https://alternatievengids.nl/vergelijk/mailbox-org-vs-nextcloud-hub/)
+- [meinGPT of Mistral Vibe (voorheen Le Chat)](https://alternatievengids.nl/vergelijk/meingpt-vs-mistral-vibe/)
+- [Nextcloud Hub of Open-Xchange App Suite](https://alternatievengids.nl/vergelijk/nextcloud-hub-vs-open-xchange-app-suite/)
+- [AIAIAI of Orq.ai](https://alternatievengids.nl/vergelijk/aiaiai-vs-orq-ai/)
+- [Aleph Alpha PhariaAI / Kolibri of Orq.ai](https://alternatievengids.nl/vergelijk/aleph-alpha-phariaai-kolibri-vs-orq-ai/)
+- [Infomaniak kSuite (kDrive) of LibreOffice / Collabora Online](https://alternatievengids.nl/vergelijk/infomaniak-ksuite-vs-libreoffice-collabora-online/)
+- [Langdock of Orq.ai](https://alternatievengids.nl/vergelijk/langdock-vs-orq-ai/)
+- [LibreOffice / Collabora Online of mailbox.org](https://alternatievengids.nl/vergelijk/libreoffice-collabora-online-vs-mailbox-org/)
+- [LibreOffice / Collabora Online of Nextcloud Hub](https://alternatievengids.nl/vergelijk/libreoffice-collabora-online-vs-nextcloud-hub/)
+- [LibreOffice / Collabora Online of Open-Xchange App Suite](https://alternatievengids.nl/vergelijk/libreoffice-collabora-online-vs-open-xchange-app-suite/)
+- [meinGPT of Orq.ai](https://alternatievengids.nl/vergelijk/meingpt-vs-orq-ai/)
+- [Mistral Vibe (voorheen Le Chat) of Orq.ai](https://alternatievengids.nl/vergelijk/mistral-vibe-vs-orq-ai/)
+
+## Optional
+- [Over deze gids](https://alternatievengids.nl/over/)
+- [Soevereiniteitsscan van Newground](https://scan.newground.nl/)
+- Volledige tekst: https://alternatievengids.nl/llms-full.txt
