@@ -1,5 +1,11 @@
 # alternatievengids
 
+> **Status: niet meer onderhouden (8 november 2026).** Newground heeft besloten de Alternatievengids niet voort te zetten en alternatievengids.nl verwijst door naar european-alternatives.eu. De lijst, de beoordelingen en de agenten die ze bijhouden leven door in de Soevereiniteitsscan (https://scan.newground.nl, repo `rheijmen/sovereignos`). Deze repo blijft openbaar staan, zodat wie dat wil het kan forken.
+>
+> **Licentie:** de code staat onder de [EUPL-1.2](LICENSE). De beoordelingen en teksten van Newground vallen daar niet onder; vraag Newground om toestemming voor hergebruik.
+>
+> **Forken:** de bouw haalt de lijst en regels van de scan op (zie hieronder). Dat blijft alleen werken zolang de scan dat publiek aanbiedt; wie dit voortzet, heeft een eigen bron nodig.
+
 Een Nederlandse gids voor (Europese) soevereine alternatieven voor Big Tech oplossingen. Een initiatief van Newground, op alternatievengids.nl.
 
 Start elke sessie met `CLAUDE.md` en `docs/OVERDRACHT.md`.

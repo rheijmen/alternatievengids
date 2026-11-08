@@ -5,6 +5,7 @@
   "description": "alternatievengids.nl: statische gids met Europese alternatieven voor Big Tech, gebouwd uit dezelfde lijst en regels als de Soevereiniteitsscan van Newground.",
   "type": "module",
   "engines": { "node": ">=22" },
+  "license": "EUPL-1.2",
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
