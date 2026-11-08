@@ -2,6 +2,20 @@
 
 Startpunt voor elke sessie die aan deze site werkt. Lees ook `CLAUDE.md` (werkafspraken met Rik) en `README.md` (techniek). Werk dit bestand bij aan het eind van een sessie.
 
+## Stopgezet (besluit Rik, 8 november 2026)
+
+De Alternatievengids wordt niet voortgezet. Reden: het is nu niet de ingang die Newground wil nemen, en een community-model (wiki, agenten, moderatie) kost net zoveel aandacht als de Gids zelf, terwijl european-alternatives.eu al een community-site voor dit onderwerp is.
+
+- **alternatievengids.nl** verwijst door naar https://european-alternatives.eu (tijdelijke doorverwijzing, 302). Het domein wordt niet verlengd.
+- **Deze repo** blijft openbaar, onder de EUPL-1.2 (code), met de melding dat ze niet meer wordt onderhouden. De beoordelingen en teksten vallen buiten die licentie.
+- **De bouw publiceert niet meer** en draait niet meer dagelijks: alleen tests en controle bij een wijziging. De branch `site` mag weg zodra de server niet meer naar de Gids verwijst.
+- **Blijft leven in de scan:** de alternatievenlijst, de oordelen en de agenten (Sector, Categoriser, Filter). Het kader met de visie ("Last App Standing") hoort op newground.nl, niet hier.
+- **Blijft leven buiten deze repo:** het discovery-document in Riks Drive.
+- **Nog te doen door Rik:** domein niet verlengen, alternatievengids.nl uit Simple Analytics halen, op de server de update-timer stoppen (zie het gesprek) en de repo op GitHub archiveren als alles klaar is.
+- **Afgebroken, niet gebouwd:** use-case pagina's (Microsoft 365), "Gewijzigd deze maand", nieuwsbrief, formulier-endpoint.
+
+Wie dit ooit weer oppakt: lees eerst de rest van dit bestand. De valkuilen onderaan gelden nog.
+
 ## Het project in het kort
 
 - **Wat:** een Nederlandstalige gids met Europese en open-source alternatieven voor Big Tech-software. Een initiatief van Newground, geen aparte bv. Het domein alternatievengids.nl is gekocht.
@@ -31,7 +45,7 @@ De route is: **Alternatievengids, dan de scan, dan follow-up en lead** (onder an
 
 | Stap | Doel | Wat erbij hoort |
 |---|---|---|
-| Alternatievengids (deze repo) | Vindbaar worden en vertrouwen winnen | Oordeel per product, vergelijkpagina's, use-case pagina's, bronnen. Verwijst naar de scan en naar het gesprek, niet verder. |
+| Alternatievengids (deze repo, stopgezet op 8 november 2026) | Vindbaar worden en vertrouwen winnen | Oordeel per product, vergelijkpagina's, use-case pagina's, bronnen. Verwijst naar de scan en naar het gesprek, niet verder. |
 | Scan (repo `sovereignos`) | Het persoonlijke beeld van de bezoeker | De vragenlijst en het resultaat, de beheerpagina, de formulierregel en de fixes daarvoor. Aan het eind van een resultaat staat de uitnodiging voor een discovery. |
 | Follow-up en lead | Meten wat mensen echt doen | De discovery: aanpak, privacy by design, gereedschap en het Sovereign Discovery Report. Staat in een Google Doc in Riks Drive ("Sovereign Discovery: aanpak en privacy by design"), niet in een repo. |
 
